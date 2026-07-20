@@ -207,7 +207,7 @@ export class Horario implements OnInit {
     return ramo ? ramo.nombre : '';
   }
 
-  getColorRamo(id: number | null): { bg: string; border: string; text: string } | null {
+  getColorRamo(id: number | null | undefined): { bg: string; border: string; text: string } | null {
     if (!id) return null;
     if (!this.ramoColorMap.has(id)) {
       this.ramoColorMap.set(id, this.colorIndex % this.RAMO_COLORS.length);
@@ -216,7 +216,7 @@ export class Horario implements OnInit {
     return this.RAMO_COLORS[this.ramoColorMap.get(id)!];
   }
 
-  getSlotStyle(id: number | null): { [key: string]: string } {
+  getSlotStyle(id: number | null | undefined): { [key: string]: string } {
     const color = this.getColorRamo(id);
     if (!color) return {};
     return {
@@ -227,7 +227,7 @@ export class Horario implements OnInit {
     };
   }
 
-  getSelectStyle(id: number | null): { [key: string]: string } {
+  getSelectStyle(id: number | null | undefined): { [key: string]: string } {
     const color = this.getColorRamo(id);
     if (!color) return {};
     return { 'color': color.text };

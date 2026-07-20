@@ -65,11 +65,14 @@
               <div class="cell-wrapper" [class.has-content]="getBloque(dia, bloqueKey).ramoId || getBloque(dia, bloqueKey).ramo2Id">
                 
                 <!-- Ramo 1 -->
-                <div class="ramo-slot" [class.filled]="getBloque(dia, bloqueKey).ramoId">
+                <div class="ramo-slot" 
+                     [class.filled]="getBloque(dia, bloqueKey).ramoId"
+                     [ngStyle]="getSlotStyle(getBloque(dia, bloqueKey).ramoId)">
                   <select class="ramo-select-visible" 
                           [ngModel]="getBloque(dia, bloqueKey).ramoId" 
                           (ngModelChange)="asignarRamo(getBloque(dia, bloqueKey), $event, false)"
-                          [class.empty-select]="!getBloque(dia, bloqueKey).ramoId">
+                          [class.empty-select]="!getBloque(dia, bloqueKey).ramoId"
+                          [ngStyle]="getSelectStyle(getBloque(dia, bloqueKey).ramoId)">
                     <option [ngValue]="null">---</option>
                     <option *ngFor="let ramo of ramosCursando" [ngValue]="ramo.id">
                       {{ ramo.nombre }}
@@ -88,12 +91,14 @@
                 <!-- Ramo 2 -->
                 <div class="ramo-slot slot-2" 
                      *ngIf="getBloque(dia, bloqueKey).ramoId || getBloque(dia, bloqueKey).ramo2Id" 
-                     [class.filled]="getBloque(dia, bloqueKey).ramo2Id">
+                     [class.filled]="getBloque(dia, bloqueKey).ramo2Id"
+                     [ngStyle]="getSlotStyle(getBloque(dia, bloqueKey).ramo2Id)">
                   
                   <select class="ramo-select-visible" 
                           [ngModel]="getBloque(dia, bloqueKey).ramo2Id" 
                           (ngModelChange)="asignarRamo(getBloque(dia, bloqueKey), $event, true)"
-                          [class.empty-select]="!getBloque(dia, bloqueKey).ramo2Id">
+                          [class.empty-select]="!getBloque(dia, bloqueKey).ramo2Id"
+                          [ngStyle]="getSelectStyle(getBloque(dia, bloqueKey).ramo2Id)">
                     <option [ngValue]="null">
                       {{ getBloque(dia, bloqueKey).ramo2Id ? '✕ Quitar tope' : '+ Añadir tope horario' }}
                     </option>
@@ -116,6 +121,17 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Leyenda de colores -->
+    <div class="leyenda-colores" *ngIf="!cargandoHorario && ramosCursando.length > 0">
+      <span class="leyenda-titulo"><i class="bi bi-palette"></i> Ramos:</span>
+      <div class="leyenda-items">
+        <div class="leyenda-item" *ngFor="let ramo of ramosCursando"
+             [ngStyle]="{'background': getColorRamo(ramo.id)?.bg, 'border-color': getColorRamo(ramo.id)?.border, 'color': getColorRamo(ramo.id)?.text}">
+          {{ ramo.nombre }}
+        </div>
+      </div>
     </div>
   </div>
 </div>

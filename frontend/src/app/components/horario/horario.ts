@@ -23,6 +23,25 @@ export class Horario implements OnInit {
   private savePending = false;
   private saveInFlight = false;
 
+  // Paleta de colores para los ramos
+  private RAMO_COLORS = [
+    { bg: '#ede9fe', border: '#7c3aed', text: '#5b21b6' }, // violeta
+    { bg: '#dbeafe', border: '#2563eb', text: '#1d4ed8' }, // azul
+    { bg: '#d1fae5', border: '#059669', text: '#065f46' }, // verde
+    { bg: '#fef3c7', border: '#d97706', text: '#92400e' }, // ámbar
+    { bg: '#fce7f3', border: '#db2777', text: '#9d174d' }, // rosa
+    { bg: '#fee2e2', border: '#dc2626', text: '#991b1b' }, // rojo
+    { bg: '#e0f2fe', border: '#0284c7', text: '#075985' }, // celeste
+    { bg: '#f0fdf4', border: '#16a34a', text: '#14532d' }, // esmeralda
+    { bg: '#fdf4ff', border: '#a21caf', text: '#701a75' }, // fucsia
+    { bg: '#fff7ed', border: '#ea580c', text: '#7c2d12' }, // naranja
+    { bg: '#f0f9ff', border: '#0369a1', text: '#0c4a6e' }, // azul oscuro
+    { bg: '#fefce8', border: '#ca8a04', text: '#713f12' }, // amarillo
+  ];
+
+  private ramoColorMap: Map<number, number> = new Map();
+  private colorIndex = 0;
+
   cargandoHorario = true;
 
   dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -186,6 +205,32 @@ export class Horario implements OnInit {
     if (!id) return '';
     const ramo = this.ramosCursando.find(r => r.id === id);
     return ramo ? ramo.nombre : '';
+  }
+
+  getColorRamo(id: number | null): { bg: string; border: string; text: string } | null {
+    if (!id) return null;
+    if (!this.ramoColorMap.has(id)) {
+      this.ramoColorMap.set(id, this.colorIndex % this.RAMO_COLORS.length);
+      this.colorIndex++;
+    }
+    return this.RAMO_COLORS[this.ramoColorMap.get(id)!];
+  }
+
+  getSlotStyle(id: number | null): { [key: string]: string } {
+    const color = this.getColorRamo(id);
+    if (!color) return {};
+    return {
+      'background': color.bg,
+      'border-color': color.border,
+      'border-width': '1.5px',
+      'border-style': 'solid'
+    };
+  }
+
+  getSelectStyle(id: number | null): { [key: string]: string } {
+    const color = this.getColorRamo(id);
+    if (!color) return {};
+    return { 'color': color.text };
   }
 
   // Se eliminó cargarHorarioDesdeAPI porque ahora está en cargarDatos

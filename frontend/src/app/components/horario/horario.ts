@@ -156,11 +156,25 @@ export class Horario implements OnInit {
   }
 
   asignarRamo(bloque: BloqueHorarioDTO, value: number | null, isSegundoRamo: boolean = false) {
+    // Buscar el bloque real en la grilla para garantizar mutación correcta
+    const bloqueReal = this.grilla.find(b => b.dia === bloque.dia && b.hora === bloque.hora);
+    const target = bloqueReal ?? bloque;
     if (isSegundoRamo) {
-      bloque.ramo2Id = value;
+      target.ramo2Id = value;
+      // Si se quita el tope, también se limpia su detalle
+      if (!value) {
+        target.detalle2 = '';
+      }
     } else {
-      bloque.ramoId = value;
+      target.ramoId = value;
+      // Si se quita el ramo principal, también se quita el tope
+      if (!value) {
+        target.ramo2Id = null;
+        target.detalle1 = '';
+        target.detalle2 = '';
+      }
     }
+    this.cdr.detectChanges();
     this.guardarHorarioEnAPI();
   }
 

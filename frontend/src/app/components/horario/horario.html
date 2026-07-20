@@ -94,7 +94,9 @@
                           [ngModel]="getBloque(dia, bloqueKey).ramo2Id" 
                           (ngModelChange)="asignarRamo(getBloque(dia, bloqueKey), $event, true)"
                           [class.empty-select]="!getBloque(dia, bloqueKey).ramo2Id">
-                    <option [ngValue]="null">+ Añadir tope horario</option>
+                    <option [ngValue]="null">
+                      {{ getBloque(dia, bloqueKey).ramo2Id ? '✕ Quitar tope' : '+ Añadir tope horario' }}
+                    </option>
                     <option *ngFor="let ramo of ramosCursando" [ngValue]="ramo.id">
                       {{ ramo.nombre }}
                     </option>

@@ -1,71 +1,71 @@
 <div class="auth-page">
-  <div class="blob blob-purple"></div>
-  <div class="blob blob-cyan"></div>
-  
-  <div class="auth-container glass-panel">
-    
+  <div class="auth-wrapper">
+    <!-- Panel Izquierdo -->
     <div class="auth-left">
       <div class="auth-brand">
-        <div class="brand-icon">
-          <img src="assets/images/logo.png" alt="AULA Logo" class="brand-logo-img" />
-        </div>
+        <img src="assets/images/logo.png" alt="AULA Logo" class="brand-logo-img" />
         <h1>AULA</h1>
-        <p>Crea tu cuenta y comienza a gestionar tu progreso académico</p>
+      </div>
+      
+      <div class="auth-greeting">
+        <h2>¡Hola!</h2>
+        <h3>Bienvenido a AULA.</h3>
+        <p>Organiza tu semestre,<br>gestiona tus ramos y<br>alcanza tus metas.</p>
+        <div class="mascot-container">
+          <div class="mascot-bubble">¡Vamos<br>a lograrlo! ♥</div>
+          <img src="assets/images/mascot.png" alt="Mascota" class="mascot-img" />
+        </div>
       </div>
       
       <div class="auth-features">
-        <div class="feature">
-          <i class="bi bi-grid-3x3-gap-fill"></i>
-          <span>Gestiona tu malla y avance</span>
+        <div class="feature-pill">
+          <div class="feature-icon bg-purple"><i class="bi bi-mortarboard-fill"></i></div>
+          <span>Todo tu mundo<br>académico</span>
         </div>
-        <div class="feature">
-          <i class="bi bi-journal-check"></i>
-          <span>Calcula notas y promedios</span>
+        <div class="feature-pill">
+          <div class="feature-icon bg-blue"><i class="bi bi-calendar2-check-fill"></i></div>
+          <span>Organizado y<br>al día</span>
         </div>
-        <div class="feature">
-          <i class="bi bi-calendar3"></i>
-          <span>Organiza horarios y eventos</span>
+        <div class="feature-pill">
+          <div class="feature-icon bg-indigo"><i class="bi bi-graph-up-arrow"></i></div>
+          <span>Enfocado en<br>tu éxito</span>
         </div>
       </div>
     </div>
 
+    <!-- Panel Derecho -->
     <div class="auth-right">
-      <div class="auth-form-container">
+      <div class="auth-form-card">
         <div class="card-header">
-          <h2>Crear Cuenta</h2>
-          <p>Completa tus datos para registrarte</p>
+          <img src="assets/images/logo.png" alt="AULA Logo" class="form-logo" />
+          <h2>AULA</h2>
+          <p>Tu aprendizaje, sin límites.</p>
         </div>
 
         <div class="form-group">
-          <label for="reg-nombre">
-            <i class="bi bi-person"></i> Nombre
-          </label>
+          <label for="reg-nombre">Nombre completo</label>
           <div class="input-wrapper">
             <i class="bi bi-person input-icon"></i>
-            <input id="reg-nombre" type="text" [(ngModel)]="nombre" placeholder="Tu nombre completo"
+            <input id="reg-nombre" type="text" [(ngModel)]="nombre" placeholder="Juan Pérez"
               autocomplete="name" autofocus />
           </div>
         </div>
 
         <div class="form-group">
-          <label for="reg-email">
-            <i class="bi bi-envelope"></i> Email
-          </label>
+          <label for="reg-email">Correo electrónico</label>
           <div class="input-wrapper">
             <i class="bi bi-envelope input-icon"></i>
-            <input id="reg-email" type="email" [(ngModel)]="email" placeholder="tu@email.com"
+            <input id="reg-email" type="email" [(ngModel)]="email" placeholder="ejemplo@uc.cl"
               autocomplete="email" />
           </div>
         </div>
 
         <div class="form-group">
-          <label for="reg-password">
-            <i class="bi bi-lock"></i> Contraseña
-          </label>
+          <label for="reg-password">Contraseña</label>
           <div class="input-wrapper">
             <i class="bi bi-lock input-icon"></i>
             <input id="reg-password" [type]="mostrarPassword ? 'text' : 'password'" [(ngModel)]="password" placeholder="Mínimo 6 caracteres"
-              autocomplete="new-password" (keyup.enter)="register()" style="padding-right: 48px;" />
+              autocomplete="new-password" (keyup.enter)="register()" />
             <i class="toggle-password bi" [ngClass]="mostrarPassword ? 'bi-eye-slash' : 'bi-eye'" 
                (click)="mostrarPassword = !mostrarPassword"></i>
           </div>
@@ -75,7 +75,7 @@
           <div class="checkbox-wrapper">
             <input type="checkbox" id="terminos" [(ngModel)]="terminosAceptados" name="terminos" required />
             <label for="terminos">
-              Acepto los <a href="javascript:void(0)" (click)="mostrarTerminos()" class="forgot-link">Términos y Condiciones</a>
+              Acepto los <a href="javascript:void(0)" (click)="mostrarTerminos()" class="forgot-password-link">Términos y Condiciones</a>
             </label>
           </div>
         </div>
@@ -86,21 +86,20 @@
         </div>
 
         <button class="btn-submit" (click)="register()" [disabled]="cargando || !terminosAceptados">
-          <i class="bi bi-person-plus-fill" *ngIf="!cargando"></i>
+          <span *ngIf="!cargando">Crear cuenta</span>
+          <span *ngIf="cargando">Registrando...</span>
+          <i class="bi bi-arrow-right" *ngIf="!cargando"></i>
           <i class="bi bi-arrow-repeat spin" *ngIf="cargando"></i>
-          {{ cargando ? 'Registrando...' : 'Crear cuenta' }}
         </button>
 
-        <div class="auth-divider">
-          <span>o</span>
-        </div>
-
-        <p class="auth-link">
-          ¿Ya tienes cuenta?
-          <a routerLink="/login">Inicia sesión <i class="bi bi-arrow-right"></i></a>
+        <p class="auth-link" style="margin-top: 1rem;">
+          ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
         </p>
       </div>
     </div>
-    
+  </div>
+  
+  <div class="auth-footer">
+    <i class="bi bi-shield-check"></i> Seguro, privado y hecho para estudiantes.
   </div>
 </div>

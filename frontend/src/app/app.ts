@@ -76,6 +76,8 @@ export class App implements AfterViewInit {
       this.isDrawing = true;
       this.lastX = event.clientX;
       this.lastY = event.clientY;
+      // Prevent text selection while drawing
+      event.preventDefault();
     }
   }
 

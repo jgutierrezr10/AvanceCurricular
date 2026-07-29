@@ -3,10 +3,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255,255,255,0.4);
+  border-bottom: 1px solid var(--nav-border);
   box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
@@ -64,23 +64,23 @@
 }
 
 .btn-cuenta {
-  background: #f1f5f9;
+  background: var(--btn-cuenta-bg);
   color: var(--text-main);
 }
 
 .btn-cuenta:hover {
-  background: #e2e8f0;
+  background: var(--btn-cuenta-hover);
   transform: translateY(-1px);
 }
 
 .btn-logout {
-  background: #fef2f2;
+  background: var(--btn-logout-bg);
   color: #ef4444;
 }
 
 .btn-logout:hover {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: var(--btn-logout-hover);
+  color: #ef4444;
   transform: translateY(-1px);
 }
 

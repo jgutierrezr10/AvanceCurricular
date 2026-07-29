@@ -28,6 +28,15 @@
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
+  
+  /* Navbar & Specifics */
+  --nav-bg: rgba(255, 255, 255, 0.85);
+  --nav-border: rgba(255, 255, 255, 0.4);
+  --btn-cuenta-bg: #f1f5f9;
+  --btn-cuenta-hover: #e2e8f0;
+  --btn-logout-bg: #fef2f2;
+  --btn-logout-hover: #fee2e2;
+  --card-border: rgba(255, 255, 255, 0.4);
 }
 
 /* ══════════════════════════════════════
@@ -44,6 +53,14 @@
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+
+  --nav-bg: rgba(30, 41, 59, 0.85);
+  --nav-border: rgba(255, 255, 255, 0.05);
+  --btn-cuenta-bg: rgba(255, 255, 255, 0.05);
+  --btn-cuenta-hover: rgba(255, 255, 255, 0.1);
+  --btn-logout-bg: rgba(239, 68, 68, 0.15);
+  --btn-logout-hover: rgba(239, 68, 68, 0.25);
+  --card-border: rgba(255, 255, 255, 0.05);
 }
 
 [data-theme="dark"] body {

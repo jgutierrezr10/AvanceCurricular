@@ -4,7 +4,15 @@
   <button class="btn-theme-toggle" (click)="toggleTheme()" [title]="isDarkMode ? 'Modo claro' : 'Modo oscuro'">
     <i class="bi" [class.bi-moon-stars-fill]="!isDarkMode" [class.bi-sun-fill]="isDarkMode"></i>
   </button>
-  <button class="btn-clear-canvas" (click)="clearCanvas()" title="Limpiar dibujos">
-    <i class="bi bi-eraser-fill"></i>
+  <div class="drawing-tools">
+    <button class="btn-tool" [class.active]="currentTool === 'pencil'" (click)="setTool('pencil')" title="Lápiz">
+      <i class="bi bi-pencil-fill"></i>
+    </button>
+    <button class="btn-tool" [class.active]="currentTool === 'eraser'" (click)="setTool('eraser')" title="Goma de borrar">
+      <i class="bi bi-eraser-fill"></i>
+    </button>
+  </div>
+  <button class="btn-clear-canvas" (click)="clearCanvas()" title="Limpiar todo el dibujo">
+    <i class="bi bi-trash3-fill"></i>
   </button>
 </div>

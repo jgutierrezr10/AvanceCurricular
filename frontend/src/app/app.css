@@ -18,8 +18,20 @@
   z-index: 9999;
 }
 
+.drawing-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: white;
+  border-radius: 24px;
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 24px rgba(108, 99, 255, 0.15);
+}
+
 .btn-clear-canvas,
-.btn-theme-toggle {
+.btn-theme-toggle,
+.btn-tool {
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -42,6 +54,26 @@
   transform: scale(1.1) rotate(15deg);
 }
 
+.btn-tool {
+  width: 40px;
+  height: 40px;
+  box-shadow: none;
+  border: none;
+  background: transparent;
+  color: #64748b;
+}
+
+.btn-tool:hover {
+  color: #6C63FF;
+  transform: scale(1.1);
+}
+
+.btn-tool.active {
+  background: #6C63FF;
+  color: white;
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2);
+}
+
 .btn-clear-canvas:hover {
   background: #fef2f2;
   color: #ef4444;
@@ -55,4 +87,22 @@
   background: var(--bg-card);
   border-color: var(--border-color);
   color: var(--primary-light);
+}
+
+[data-theme="dark"] .drawing-tools {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .btn-tool {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .btn-tool:hover {
+  color: var(--primary-light);
+}
+
+[data-theme="dark"] .btn-tool.active {
+  background: var(--primary-color);
+  color: white;
 }

@@ -16,6 +16,7 @@ export class App implements AfterViewInit, OnInit {
   private isDrawing = false;
   private lastX = 0;
   private lastY = 0;
+  currentTool: 'pencil' | 'eraser' = 'pencil';
   
   isDarkMode = false;
 
@@ -96,6 +97,10 @@ export class App implements AfterViewInit, OnInit {
     }
   }
 
+  setTool(tool: 'pencil' | 'eraser') {
+    this.currentTool = tool;
+  }
+
   clearCanvas() {
     if (this.ctx && this.canvasRef) {
       const canvas = this.canvasRef.nativeElement;
@@ -133,12 +138,21 @@ export class App implements AfterViewInit, OnInit {
     this.ctx.moveTo(this.lastX, this.lastY);
     this.ctx.lineTo(event.clientX, event.clientY);
     
-    // Tinta morada original
-    this.ctx.strokeStyle = '#5b21b6';
-    this.ctx.lineWidth = 2;
-    this.ctx.lineCap = 'round';
-    this.ctx.lineJoin = 'round';
-    this.ctx.shadowBlur = 0;
+    if (this.currentTool === 'pencil') {
+      this.ctx.globalCompositeOperation = 'source-over';
+      this.ctx.strokeStyle = 'rgba(71, 85, 105, 0.7)';
+      this.ctx.lineWidth = 3;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+      this.ctx.shadowBlur = 1.5;
+      this.ctx.shadowColor = 'rgba(71, 85, 105, 0.5)';
+    } else {
+      this.ctx.globalCompositeOperation = 'destination-out';
+      this.ctx.lineWidth = 20;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+      this.ctx.shadowBlur = 0;
+    }
     
     this.ctx.stroke();
 

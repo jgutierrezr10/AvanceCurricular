@@ -130,7 +130,7 @@ export class Dashboard implements OnInit {
     this.horarioService.obtenerHorario(1).subscribe(bloques => {
       // Marcar días con clases
       const diasMap: { [key: string]: 'L' | 'M' | 'X' | 'J' | 'V' | 'S' | 'D' } = {
-        'Lunes': 'L', 'Martes': 'M', 'Miercoles': 'X', 'Jueves': 'J', 'Viernes': 'V', 'Sabado': 'S', 'Domingo': 'D'
+        'Lunes': 'L', 'Martes': 'M', 'Miércoles': 'X', 'Jueves': 'J', 'Viernes': 'V', 'Sábado': 'S', 'Domingo': 'D'
       };
 
       const diasConClasesSet = new Set<string>();
@@ -148,39 +148,62 @@ export class Dashboard implements OnInit {
         }
       });
 
-      // Calcular próxima clase (simplificado: primer bloque de hoy o mañana)
-      const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
-      const hoyIdx = new Date().getDay();
+      // Calcular próxima clase (filtrando por hora actual si es hoy)
+      const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+      const now = new Date();
+      const hoyIdx = now.getDay();
       const diaHoyStr = diasSemana[hoyIdx];
+      const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
-      const bloquesHoy = bloques.filter(b => b.dia === diaHoyStr && b.ramoId);
+      let etiquetasHora = {};
+      try { etiquetasHora = JSON.parse(localStorage.getItem('horario_labels') || '{}'); } catch(e) {}
+      const etiquetasPorDefecto: any = {
+        'Bloque 1': '08:00 - 09:20', 'Bloque 2': '09:30 - 10:50', 'Bloque 3': '11:00 - 12:20', 'Bloque 4': '12:30 - 13:50',
+        'Bloque 5': '14:00 - 15:20', 'Bloque 6': '16:00 - 17:20', 'Bloque 7': '17:30 - 18:50', 'Bloque 8': '19:00 - 20:10'
+      };
+
+      const getLabel = (bloqueHoraStr: string) => (etiquetasHora as any)[bloqueHoraStr] || etiquetasPorDefecto[bloqueHoraStr] || bloqueHoraStr;
+      const getStartTime = (bloqueHoraStr: string) => getLabel(bloqueHoraStr).split(' - ')[0] || '00:00';
+
+      const bloquesHoy = bloques.filter(b => b.dia === diaHoyStr && b.ramoId)
+                                .filter(b => getStartTime(b.hora) >= currentTime);
       
       if (bloquesHoy.length > 0) {
-        // Asumimos que están ordenados o tomamos el primero
         const b = bloquesHoy[0];
-        // Buscar el nombre del ramo (requiere tener la lista de ramos, la cargamos antes)
         this.ramoService.getRamos().subscribe((ramos: Ramo[]) => {
           const ramo = ramos.find((r: Ramo) => r.id === b.ramoId);
           this.proximaClase = {
             ramo: ramo ? ramo.nombre : 'Clase',
-            horario: `Hoy, ${b.hora}`,
+            horario: `Hoy, ${getLabel(b.hora)}`,
             sala: b.detalle1 || b.detalle2 || 'Sala por definir'
           };
         });
       } else {
-        // Buscar clase mañana
-        const diaMananaStr = diasSemana[(hoyIdx + 1) % 7];
-        const bloquesManana = bloques.filter(b => b.dia === diaMananaStr && b.ramoId);
-        if (bloquesManana.length > 0) {
-          const b = bloquesManana[0];
-          this.ramoService.getRamos().subscribe((ramos: Ramo[]) => {
-            const ramo = ramos.find((r: Ramo) => r.id === b.ramoId);
-            this.proximaClase = {
-              ramo: ramo ? ramo.nombre : 'Clase',
-              horario: `Mañana, ${b.hora}`,
-              sala: b.detalle1 || b.detalle2 || 'Sala por definir'
-            };
-          });
+        // Buscar primera clase en los próximos días (ej: mañana, o lunes si es fin de semana)
+        let proximaClaseEncontrada = false;
+        for (let offset = 1; offset <= 6; offset++) {
+          const proxDiaIdx = (hoyIdx + offset) % 7;
+          const proxDiaStr = diasSemana[proxDiaIdx];
+          const bloquesProxDia = bloques.filter(b => b.dia === proxDiaStr && b.ramoId);
+          
+          if (bloquesProxDia.length > 0) {
+            const b = bloquesProxDia[0];
+            this.ramoService.getRamos().subscribe((ramos: Ramo[]) => {
+              const ramo = ramos.find((r: Ramo) => r.id === b.ramoId);
+              let prefijoDia = offset === 1 ? 'Mañana' : proxDiaStr;
+              this.proximaClase = {
+                ramo: ramo ? ramo.nombre : 'Clase',
+                horario: `${prefijoDia}, ${getLabel(b.hora)}`,
+                sala: b.detalle1 || b.detalle2 || 'Sala por definir'
+              };
+            });
+            proximaClaseEncontrada = true;
+            break;
+          }
+        }
+        
+        if (!proximaClaseEncontrada) {
+            this.proximaClase = { ramo: 'Sin clases próximas', horario: '--:-- – --:--', sala: 'N/A' };
         }
       }
     });

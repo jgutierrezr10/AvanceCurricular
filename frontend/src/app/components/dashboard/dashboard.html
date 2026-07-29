@@ -146,30 +146,7 @@
 
     </section>
 
-    <!-- Bottom Section: Tasks and Events -->
-    <section class="section-bottom">
-      
-      <!-- Tasks Card removed as per option B -->      <!-- Events Card -->
-      <div class="events-card">
-        <div class="card-header">
-          <div class="header-title">
-            <div class="icon-square bg-blue-light"><i class="bi bi-calendar2-event"></i></div>
-            <h2>Eventos próximos</h2>
-          </div>
-        </div>
-        <div class="events-list">
-          <div class="event-item" *ngFor="let ev of eventosProximos">
-            <div class="event-dot dot-{{ ev.color }}"></div>
-            <div class="event-details">
-              <div class="event-title">{{ ev.titulo }}</div>
-              <div class="event-time">{{ ev.fecha }} &bull; {{ ev.hora }}</div>
-            </div>
-          </div>
-        </div>
-        <div class="events-illustration"></div>
-      </div>
 
-    </section>
 
   </main>
 </div>

@@ -15,8 +15,10 @@
   max-width: 1000px;
   min-height: 600px;
   overflow: hidden;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 24px 80px rgba(108, 99, 255, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  background: white;
+  border-radius: var(--radius-lg);
 }
 
 /* ── Left Panel (Brand) ── */
@@ -27,8 +29,8 @@
   flex-direction: column;
   justify-content: center;
   background: transparent;
-  border-right: 1px solid var(--color-border);
-  color: var(--color-text-main);
+  border-right: 1px solid var(--border-color);
+  color: var(--text-main);
 }
 
 .auth-brand {
@@ -43,10 +45,10 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 1.5rem;
-  background: var(--color-surface);
+  background: var(--bg-card);
   border-radius: 24px;
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-color);
 }
 
 .brand-logo-img {
@@ -56,7 +58,7 @@
 }
 
 .auth-brand h1 {
-  color: var(--color-text-main);
+  color: var(--text-main);
   font-size: 3rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
@@ -64,7 +66,7 @@
 }
 
 .auth-brand p {
-  color: var(--color-text-muted);
+  color: var(--text-muted);
   font-size: 1.15rem;
   line-height: 1.6;
 }
@@ -79,34 +81,35 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  color: var(--color-text-main);
+  color: var(--text-main);
   font-size: 16px;
   font-weight: 500;
   padding: 16px;
-  background: var(--color-surface);
+  background: var(--bg-card);
   border-radius: 16px;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-color);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: var(--shadow-sm);
 }
 
 .feature:hover {
   transform: translateX(8px) translateY(-2px);
-  border-color: var(--color-primary);
+  border-color: var(--primary-color);
   box-shadow: var(--shadow-md);
 }
 
 .feature i {
   font-size: 22px;
-  color: var(--color-primary);
+  color: #6C63FF; /* Morado */
   width: 44px;
   height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-primary-soft);
+  background: #fefce8; /* Fondo amarillento suave */
   border-radius: 12px;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid #fbbf24; /* Borde amarillo */
+  box-shadow: 0 4px 10px rgba(251, 191, 36, 0.2);
   transition: transform 0.3s ease;
 }
 
@@ -259,9 +262,9 @@
 .btn-submit {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  background: linear-gradient(135deg, #6C63FF, #5a52e0); /* Morado */
   color: white;
-  border: none;
+  border: 2px solid #fbbf24; /* Borde amarillo brillante */
   border-radius: 14px;
   font-size: 16px;
   font-weight: 700;
@@ -276,7 +279,10 @@
 
 .btn-submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(108, 99, 255, 0.4);
+  background: linear-gradient(135deg, #fbbf24, #f59e0b); /* Se vuelve amarillo al pasar el mouse */
+  border-color: #6C63FF; /* Y borde morado */
+  color: #1e1e2d;
+  box-shadow: 0 12px 25px rgba(251, 191, 36, 0.4);
 }
 
 .btn-submit:disabled {

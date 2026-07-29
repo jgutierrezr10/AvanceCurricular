@@ -43,6 +43,8 @@ export class Dashboard implements OnInit {
     L: false, M: false, X: false, J: false, V: false, S: false, D: false
   };
 
+  mejoresRamos: { ramo: string, promedio: number }[] = [];
+
   constructor(
     private authService: AuthService,
     private ramoService: RamoService,
@@ -71,13 +73,6 @@ export class Dashboard implements OnInit {
       this.estadisticas.ramosInscritos = cursando.length;
       if (ramos.length > 0) {
         this.progresoMalla = Math.round((aprobados.length / ramos.length) * 100);
-      }
-
-      // Promedio General (de ramos aprobados que tengan nota)
-      const ramosConNota = aprobados.filter(r => r.nota && r.nota > 0);
-      if (ramosConNota.length > 0) {
-        const suma = ramosConNota.reduce((acc, r) => acc + (r.nota || 0), 0);
-        this.estadisticas.promedioGeneral = Number((suma / ramosConNota.length).toFixed(1));
       }
 
       // 2. Cargar Evaluaciones
@@ -115,7 +110,7 @@ export class Dashboard implements OnInit {
           };
         }
 
-        // Calcular promedio actual (de evaluaciones con nota)
+        // Calcular promedio actual (de evaluaciones con nota general)
         const conNota = evaluaciones.filter(e => e.nota && e.nota > 0);
         if (conNota.length > 0) {
           const sumaNotas = conNota.reduce((acc, e) => acc + (e.nota! * (e.ponderacion / 100)), 0);
@@ -123,6 +118,32 @@ export class Dashboard implements OnInit {
           const prom = sumaPond > 0 ? sumaNotas / sumaPond : 0;
           this.promedioActual = `${prom.toFixed(1)} / 7.0`;
         }
+
+        // Calcular promedios de cada ramo cursando y promedio del semestre
+        const promediosSemestre: number[] = [];
+        const topRamosTemp: { ramo: string, promedio: number }[] = [];
+
+        cursando.forEach(ramo => {
+          const evsRamo = evaluaciones.filter(e => e.ramoId === ramo.id && e.nota && e.nota > 0 && e.ponderacion > 0);
+          if (evsRamo.length > 0) {
+            const sumaNotas = evsRamo.reduce((acc, e) => acc + (e.nota! * (e.ponderacion / 100)), 0);
+            const sumaPond = evsRamo.reduce((acc, e) => acc + (e.ponderacion / 100), 0);
+            const promRamo = sumaPond > 0 ? sumaNotas / sumaPond : 0;
+            
+            promediosSemestre.push(promRamo);
+            topRamosTemp.push({ ramo: ramo.nombre, promedio: promRamo });
+          }
+        });
+
+        if (promediosSemestre.length > 0) {
+          const sumaSemestre = promediosSemestre.reduce((acc, p) => acc + p, 0);
+          this.estadisticas.promedioGeneral = Number((sumaSemestre / promediosSemestre.length).toFixed(1));
+        } else {
+          this.estadisticas.promedioGeneral = 0;
+        }
+
+        topRamosTemp.sort((a, b) => b.promedio - a.promedio);
+        this.mejoresRamos = topRamosTemp.slice(0, 3);
       });
     });
 

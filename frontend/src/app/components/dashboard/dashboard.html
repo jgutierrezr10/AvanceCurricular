@@ -24,7 +24,7 @@
               <div class="stat-icon icon-yellow"><i class="bi bi-star"></i></div>
               <div class="stat-info">
                 <span class="stat-value">{{ estadisticas.promedioGeneral }}</span>
-                <span class="stat-label">Promedio<br>general</span>
+                <span class="stat-label">Promedio<br>semestre</span>
               </div>
             </div>
             <!-- Remove racha and tareas -->
@@ -113,6 +113,14 @@
             <div class="grade-display">
               <span class="grade-highlight text-yellow">{{ promedioActual.split(' / ')[0] }}</span> 
               <span class="grade-total">/ {{ promedioActual.split(' / ')[1] }}</span>
+            </div>
+          </div>
+          
+          <div class="top-ramos" *ngIf="mejoresRamos.length > 0">
+            <span class="widget-label mt-3">Mejores Promedios</span>
+            <div class="top-ramo-item" *ngFor="let m of mejoresRamos">
+               <span class="top-ramo-name">{{ m.ramo }}</span>
+               <span class="top-ramo-grade text-yellow">{{ m.promedio | number:'1.1-1' }}</span>
             </div>
           </div>
         </div>

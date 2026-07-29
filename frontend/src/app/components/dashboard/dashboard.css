@@ -349,6 +349,35 @@
   font-weight: 600;
 }
 
+.top-ramos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.mt-3 {
+  margin-top: 1rem;
+}
+.top-ramo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-main);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+.top-ramo-name {
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+.top-ramo-grade {
+  font-weight: 800;
+}
+
 .delivery-info {
   background: var(--bg-main);
   padding: 0.75rem;

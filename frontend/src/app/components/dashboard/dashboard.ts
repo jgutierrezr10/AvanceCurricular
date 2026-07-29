@@ -156,17 +156,20 @@ export class Dashboard implements OnInit {
       const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
       let etiquetasHora = {};
-      try { etiquetasHora = JSON.parse(localStorage.getItem('horario_labels') || '{}'); } catch(e) {}
+      try { etiquetasHora = JSON.parse(localStorage.getItem('etiquetas_hora') || '{}'); } catch(e) {}
       const etiquetasPorDefecto: any = {
         'Bloque 1': '08:00 - 09:20', 'Bloque 2': '09:30 - 10:50', 'Bloque 3': '11:00 - 12:20', 'Bloque 4': '12:30 - 13:50',
         'Bloque 5': '14:00 - 15:20', 'Bloque 6': '16:00 - 17:20', 'Bloque 7': '17:30 - 18:50', 'Bloque 8': '19:00 - 20:10'
       };
 
       const getLabel = (bloqueHoraStr: string) => (etiquetasHora as any)[bloqueHoraStr] || etiquetasPorDefecto[bloqueHoraStr] || bloqueHoraStr;
-      const getStartTime = (bloqueHoraStr: string) => getLabel(bloqueHoraStr).split(' - ')[0] || '00:00';
+      const getEndTime = (bloqueHoraStr: string) => {
+        const parts = getLabel(bloqueHoraStr).split(' - ');
+        return parts.length > 1 ? parts[1] : '23:59';
+      };
 
       const bloquesHoy = bloques.filter(b => b.dia === diaHoyStr && b.ramoId)
-                                .filter(b => getStartTime(b.hora) >= currentTime);
+                                .filter(b => getEndTime(b.hora) >= currentTime);
       
       if (bloquesHoy.length > 0) {
         const b = bloquesHoy[0];

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +15,7 @@ import { UpdateUserRequest } from '../../../models/usuario.model';
 export class Navbar implements OnInit {
   nombreUsuario: string = '';
   mostrarModalCuenta: boolean = false;
+  mostrarDropdown: boolean = false;
 
   // Campos formulario
   nombre: string = '';
@@ -26,7 +27,19 @@ export class Navbar implements OnInit {
   successMsg: string = '';
   guardando: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private eRef: ElementRef) {}
+
+  @HostListener('document:click', ['$event'])
+  clickout(event: Event) {
+    if(!this.eRef.nativeElement.contains(event.target)) {
+      this.mostrarDropdown = false;
+    }
+  }
+
+  toggleDropdown(event: Event) {
+    event.stopPropagation();
+    this.mostrarDropdown = !this.mostrarDropdown;
+  }
 
   ngOnInit(): void {
     this.cargarDatosUsuario();
@@ -42,6 +55,7 @@ export class Navbar implements OnInit {
   }
 
   abrirMiCuenta() {
+    this.mostrarDropdown = false;
     this.cargarDatosUsuario();
     this.errorMsg = '';
     this.successMsg = '';

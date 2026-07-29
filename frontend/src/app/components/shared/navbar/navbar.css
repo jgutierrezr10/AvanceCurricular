@@ -111,6 +111,12 @@
   border: 2px solid var(--nav-bg);
 }
 
+.nav-profile-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .nav-profile {
   display: flex;
   align-items: center;
@@ -161,6 +167,69 @@
 .nav-profile:hover .profile-chevron {
   transform: translateY(2px);
   color: var(--primary-color);
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 15px);
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-lg);
+  border-radius: 16px;
+  padding: 0.5rem;
+  min-width: 200px;
+  z-index: 100;
+  animation: dropdownIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.dropdown-item i {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+}
+
+.dropdown-item:hover {
+  background: var(--bg-main);
+  color: var(--primary-color);
+}
+.dropdown-item:hover i {
+  color: var(--primary-color);
+}
+
+.dropdown-item.text-danger:hover {
+  color: #ef4444;
+  background: #fef2f2;
+}
+.dropdown-item.text-danger:hover i {
+  color: #ef4444;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 0.5rem 0;
 }
 
 /* Modal styles (Mantenemos la estructura pero mejoramos UI) */

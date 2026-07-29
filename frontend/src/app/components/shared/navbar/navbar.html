@@ -9,6 +9,9 @@
       <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
         <i class="bi bi-house-door"></i> Dashboard
       </a>
+      <a routerLink="/malla" routerLinkActive="active" class="nav-link">
+        <i class="bi bi-grid-3x3"></i> Malla
+      </a>
       <a routerLink="/horario" routerLinkActive="active" class="nav-link">
         <i class="bi bi-calendar3"></i> Horario
       </a>
@@ -17,9 +20,6 @@
       </a>
       <a routerLink="/calendario" routerLinkActive="active" class="nav-link">
         <i class="bi bi-calendar-event"></i> Calendario
-      </a>
-      <a routerLink="/malla" routerLinkActive="active" class="nav-link">
-        <i class="bi bi-grid-3x3"></i> Malla
       </a>
     </div>
 
@@ -32,15 +32,28 @@
         <i class="bi bi-search"></i>
       </button>
       
-      <div class="nav-profile" (click)="abrirMiCuenta()">
-        <div class="avatar-circle">
-          {{ nombreUsuario ? nombreUsuario.charAt(0).toUpperCase() : 'U' }}
+      <div class="nav-profile-container">
+        <div class="nav-profile" (click)="toggleDropdown($event)">
+          <div class="avatar-circle">
+            {{ nombreUsuario ? nombreUsuario.charAt(0).toUpperCase() : 'U' }}
+          </div>
+          <div class="profile-text">
+            <span class="user-name">{{ nombreUsuario }}</span>
+            <span class="user-role">Estudiante</span>
+          </div>
+          <i class="bi bi-chevron-down profile-chevron"></i>
         </div>
-        <div class="profile-text">
-          <span class="user-name">{{ nombreUsuario }}</span>
-          <span class="user-role">Estudiante</span>
+
+        <!-- Dropdown Menu -->
+        <div class="profile-dropdown" *ngIf="mostrarDropdown">
+          <button class="dropdown-item" (click)="abrirMiCuenta()">
+            <i class="bi bi-person-gear"></i> Mi Cuenta
+          </button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item text-danger" (click)="logout()">
+            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+          </button>
         </div>
-        <i class="bi bi-chevron-down profile-chevron"></i>
       </div>
     </div>
   </nav>

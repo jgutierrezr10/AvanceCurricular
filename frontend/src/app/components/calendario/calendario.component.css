@@ -149,7 +149,7 @@
 }
 
 .day-cell:hover {
-  background-color: #fafafa;
+  background-color: var(--bg-main);
 }
 
 .day-cell:hover .day-number {
@@ -161,7 +161,7 @@
 .day-cell:nth-child(7n) { border-right: none; }
 
 .day-cell.other-month {
-  background: #fafafa;
+  background: var(--bg-main);
 }
 
 .day-cell.other-month .day-number {
@@ -174,7 +174,7 @@
 }
 
 .day-cell.weekend:not(.other-month) {
-  background: #fdfcff;
+  background: var(--bg-main);
 }
 
 .day-number {

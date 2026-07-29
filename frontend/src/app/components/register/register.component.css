@@ -4,13 +4,10 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f4ecfe;
+  background-color: transparent;
   background-image: 
-    linear-gradient(rgba(168, 85, 247, 0.15) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(168, 85, 247, 0.15) 1px, transparent 1px),
     radial-gradient(circle at 10% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
     radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 40%);
-  background-size: 30px 30px, 30px 30px, 100% 100%, 100% 100%;
   font-family: inherit;
   position: relative;
   overflow: hidden;

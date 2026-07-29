@@ -140,12 +140,11 @@ export class App implements AfterViewInit, OnInit {
     
     if (this.currentTool === 'pencil') {
       this.ctx.globalCompositeOperation = 'source-over';
-      this.ctx.strokeStyle = 'rgba(71, 85, 105, 0.7)';
+      this.ctx.strokeStyle = '#6C63FF'; // Purple color matching the theme
       this.ctx.lineWidth = 3;
       this.ctx.lineCap = 'round';
       this.ctx.lineJoin = 'round';
-      this.ctx.shadowBlur = 1.5;
-      this.ctx.shadowColor = 'rgba(71, 85, 105, 0.5)';
+      this.ctx.shadowBlur = 0;
     } else {
       this.ctx.globalCompositeOperation = 'destination-out';
       this.ctx.lineWidth = 20;

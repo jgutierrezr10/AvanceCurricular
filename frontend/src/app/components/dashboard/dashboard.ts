@@ -63,7 +63,7 @@ export class Dashboard implements OnInit {
 
   cargarDatos() {
     // 1. Cargar Ramos (Malla)
-    this.ramoService.getMallaUsuario().subscribe(ramos => {
+    this.ramoService.getRamos().subscribe((ramos: Ramo[]) => {
       // Progreso Malla y Ramos Inscritos
       const aprobados = ramos.filter(r => r.aprobado);
       const cursando = ramos.filter(r => r.cursando);
@@ -159,8 +159,8 @@ export class Dashboard implements OnInit {
         // Asumimos que están ordenados o tomamos el primero
         const b = bloquesHoy[0];
         // Buscar el nombre del ramo (requiere tener la lista de ramos, la cargamos antes)
-        this.ramoService.getMallaUsuario().subscribe(ramos => {
-          const ramo = ramos.find(r => r.id === b.ramoId);
+        this.ramoService.getRamos().subscribe((ramos: Ramo[]) => {
+          const ramo = ramos.find((r: Ramo) => r.id === b.ramoId);
           this.proximaClase = {
             ramo: ramo ? ramo.nombre : 'Clase',
             horario: `Hoy, ${b.hora}`,
@@ -173,8 +173,8 @@ export class Dashboard implements OnInit {
         const bloquesManana = bloques.filter(b => b.dia === diaMananaStr && b.ramoId);
         if (bloquesManana.length > 0) {
           const b = bloquesManana[0];
-          this.ramoService.getMallaUsuario().subscribe(ramos => {
-            const ramo = ramos.find(r => r.id === b.ramoId);
+          this.ramoService.getRamos().subscribe((ramos: Ramo[]) => {
+            const ramo = ramos.find((r: Ramo) => r.id === b.ramoId);
             this.proximaClase = {
               ramo: ramo ? ramo.nombre : 'Clase',
               horario: `Mañana, ${b.hora}`,

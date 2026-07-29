@@ -148,7 +148,13 @@
 }
 
 @media (max-width: 768px) {
-  .dashboard-container { padding: 2rem 1rem; }
-  .dashboard-header h1 { font-size: 2rem; }
-  .cards-grid { grid-template-columns: 1fr; }
+  .dashboard-container { padding: 1.5rem 1rem; }
+  .dashboard-header { margin-bottom: 2.5rem; }
+  .dashboard-header h1 { font-size: 2.2rem; }
+  .dashboard-header p { font-size: 1rem; }
+  .cards-grid { 
+    grid-template-columns: 1fr; 
+    gap: 1.5rem;
+  }
+  .dash-card { padding: 1.75rem; }
 }

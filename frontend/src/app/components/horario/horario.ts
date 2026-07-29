@@ -32,7 +32,7 @@ export class Horario implements OnInit {
     { bg: '#fce7f3', border: '#db2777', text: '#9d174d' }, // rosa
     { bg: '#fee2e2', border: '#dc2626', text: '#991b1b' }, // rojo
     { bg: '#e0f2fe', border: '#0284c7', text: '#075985' }, // celeste
-    { bg: '#f0fdf4', border: '#16a34a', text: '#14532d' }, // esmeralda
+    { bg: '#f0fdf4', border: 'rgba(22, 163, 74, 1)', text: '#14532d' }, // esmeralda
     { bg: '#fdf4ff', border: '#a21caf', text: '#701a75' }, // fucsia
     { bg: '#fff7ed', border: '#ea580c', text: '#7c2d12' }, // naranja
     { bg: '#f0f9ff', border: '#0369a1', text: '#0c4a6e' }, // azul oscuro
@@ -41,6 +41,20 @@ export class Horario implements OnInit {
 
   private ramoColorMap: Map<number, number> = new Map();
   private colorIndex = 0;
+
+  // Opciones para el select de sección
+  seccionOpciones = [
+    { value: 'TEO', label: '📘 TEO' },
+    { value: 'LAB', label: '🔬 LAB' },
+    { value: 'TEO OP.1', label: '📘 TEO OP.1' },
+    { value: 'TEO OP.2', label: '📘 TEO OP.2' },
+    { value: 'LAB OP.1', label: '🔬 LAB OP.1' },
+    { value: 'LAB OP.2', label: '🔬 LAB OP.2' },
+    { value: 'OTRO', label: '✏️ Otro...' },
+  ];
+
+  // Rastrear qué slots están en modo texto libre
+  private customModeSlots = new Set<string>();
 
   cargandoHorario = true;
 
@@ -84,7 +98,7 @@ export class Horario implements OnInit {
   cargarDatos() {
     this.cargandoHorario = true;
     const TIMEOUT_MS = 15000; // 15 segundos de timeout
-    
+
     const ramos$ = this.ramoService.getRamos().pipe(
       timeout(TIMEOUT_MS),
       catchError(err => {
@@ -92,7 +106,7 @@ export class Horario implements OnInit {
         return of([] as Ramo[]);
       })
     );
-    
+
     const bloques$ = this.horarioService.obtenerHorario().pipe(
       timeout(TIMEOUT_MS),
       catchError(err => {
@@ -104,7 +118,7 @@ export class Horario implements OnInit {
     forkJoin({ ramos: ramos$, bloques: bloques$ }).subscribe({
       next: ({ ramos, bloques }) => {
         this.ramosCursando = (ramos ?? []).filter(r => r.cursando);
-        
+
         this.grilla = this.grilla.map(b => {
           const dbBloque = (bloques ?? []).find(db => db.dia === b.dia && db.hora === b.hora);
           if (dbBloque) {
@@ -170,7 +184,7 @@ export class Horario implements OnInit {
   // Se eliminó cargarRamosCursando porque ahora está en cargarDatos
 
   getBloque(dia: string, hora: string): BloqueHorarioDTO {
-    return this.grilla.find(b => b.dia === dia && b.hora === hora) || 
+    return this.grilla.find(b => b.dia === dia && b.hora === hora) ||
       { id: '', dia, hora, ramoId: null, ramo2Id: null, detalle1: '', detalle2: '' };
   }
 
@@ -205,6 +219,53 @@ export class Horario implements OnInit {
     if (!id) return '';
     const ramo = this.ramosCursando.find(r => r.id === id);
     return ramo ? ramo.nombre : '';
+  }
+
+  /** Retorna el valor que debe mostrar el select de sección */
+  getSeccionValue(detalle: string | undefined, dia: string, hora: string, slot: number): string {
+    if (!detalle) {
+      return this.customModeSlots.has(`${dia}|${hora}|${slot}`) ? 'OTRO' : '';
+    }
+    // Si el valor guardado no es una opción predefinida, es un texto personalizado
+    const esPredefinida = this.seccionOpciones.some(op => op.value === detalle && op.value !== 'OTRO');
+    return esPredefinida ? detalle : 'OTRO';
+  }
+
+  /** True cuando el slot debe mostrar el input de texto libre */
+  isCustomMode(dia: string, hora: string, slot: number): boolean {
+    const key = `${dia}|${hora}|${slot}`;
+    if (this.customModeSlots.has(key)) return true;
+    const bloque = this.getBloque(dia, hora);
+    const detalle = slot === 1 ? bloque.detalle1 : bloque.detalle2;
+    if (!detalle) return false;
+    return !this.seccionOpciones.some(op => op.value === detalle && op.value !== 'OTRO');
+  }
+
+  /** Maneja el cambio del select de sección */
+  onSeccionChange(bloque: BloqueHorarioDTO, value: string, slot: number) {
+    const target = this.grilla.find(b => b.dia === bloque.dia && b.hora === bloque.hora) ?? bloque;
+    const key = `${bloque.dia}|${bloque.hora}|${slot}`;
+    if (value === 'OTRO') {
+      this.customModeSlots.add(key);
+      // Limpiar para que el usuario escriba desde cero
+      if (slot === 1) target.detalle1 = '';
+      else target.detalle2 = '';
+    } else {
+      this.customModeSlots.delete(key);
+      if (slot === 1) target.detalle1 = value;
+      else target.detalle2 = value;
+      this.guardarHorarioEnAPI();
+    }
+    this.cdr.detectChanges();
+  }
+
+  get ramosEnHorario(): number {
+    const ids = new Set<number>();
+    this.grilla.forEach(b => {
+      if (b.ramoId) ids.add(b.ramoId);
+      if (b.ramo2Id) ids.add(b.ramo2Id);
+    });
+    return ids.size;
   }
 
   getColorRamo(id: number | null | undefined): { bg: string; border: string; text: string } | null {
@@ -255,10 +316,10 @@ export class Horario implements OnInit {
 
     this.saveInFlight = true;
     this.guardando = true;
-    
+
     // Copiar el estado actual de la grilla para enviar
     const grillaSnapshot = this.grilla.map(b => ({ ...b }));
-    
+
     this.horarioService.guardarHorario(grillaSnapshot).subscribe({
       next: () => {
         this.saveInFlight = false;
@@ -305,6 +366,7 @@ export class Horario implements OnInit {
               b.detalle1 = '';
               b.detalle2 = '';
             });
+            this.customModeSlots.clear();
             this.guardando = false;
             this.cdr.detectChanges();
           },

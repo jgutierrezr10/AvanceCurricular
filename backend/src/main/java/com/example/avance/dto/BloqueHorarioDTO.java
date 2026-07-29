@@ -9,6 +9,7 @@ public class BloqueHorarioDTO {
     private String hora;
     private Long ramoId;
     private Long ramo2Id;
+    private Integer opcion = 1;
     private String detalle1;
     private String detalle2;
 }

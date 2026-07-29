@@ -30,6 +30,9 @@ public class BloqueHorario {
     @JoinColumn(name = "ramo2_id")
     private Ramo ramo2;
 
+    @Column(name = "opcion", nullable = false, columnDefinition = "integer default 1")
+    private Integer opcion = 1;
+
     @Column(name = "detalle1", length = 50)
     private String detalle1;
 

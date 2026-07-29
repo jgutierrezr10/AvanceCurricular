@@ -22,22 +22,22 @@ public class BloqueHorarioService {
     private final com.example.avance.repository.UsuarioRepository usuarioRepository;
 
     @Transactional(readOnly = true)
-    public List<BloqueHorarioDTO> obtenerHorario(String email) {
+    public List<BloqueHorarioDTO> obtenerHorario(String email, Integer opcion) {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return bloqueHorarioRepository.findByUsuarioId(usuario.getId())
+        return bloqueHorarioRepository.findByUsuarioIdAndOpcion(usuario.getId(), opcion)
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public List<BloqueHorarioDTO> guardarHorarioBulk(List<BloqueHorarioDTO> bloques, String email) {
+    public List<BloqueHorarioDTO> guardarHorarioBulk(List<BloqueHorarioDTO> bloques, String email, Integer opcion) {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         
-        // Forma simple: borramos todo el horario del usuario y lo guardamos de nuevo.
-        bloqueHorarioRepository.deleteByUsuarioId(usuario.getId());
+        // Forma simple: borramos todo el horario del usuario para esta opcion y lo guardamos de nuevo.
+        bloqueHorarioRepository.deleteByUsuarioIdAndOpcion(usuario.getId(), opcion);
         
         List<BloqueHorario> nuevosBloques = bloques.stream()
                 .filter(dto -> dto.getRamoId() != null || dto.getRamo2Id() != null || 
@@ -48,6 +48,7 @@ public class BloqueHorarioService {
                     bh.setUsuario(usuario);
                     bh.setDia(dto.getDia());
                     bh.setHora(dto.getHora());
+                    bh.setOpcion(opcion);
                     bh.setDetalle1(dto.getDetalle1());
                     bh.setDetalle2(dto.getDetalle2());
                     
@@ -77,10 +78,10 @@ public class BloqueHorarioService {
     }
 
     @Transactional
-    public void limpiarHorario(String email) {
+    public void limpiarHorario(String email, Integer opcion) {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        bloqueHorarioRepository.deleteByUsuarioId(usuario.getId());
+        bloqueHorarioRepository.deleteByUsuarioIdAndOpcion(usuario.getId(), opcion);
     }
 
     private BloqueHorarioDTO mapToDTO(BloqueHorario bh) {
@@ -88,6 +89,7 @@ public class BloqueHorarioService {
         dto.setId(bh.getDia() + "-" + bh.getHora()); 
         dto.setDia(bh.getDia());
         dto.setHora(bh.getHora());
+        dto.setOpcion(bh.getOpcion());
         dto.setDetalle1(bh.getDetalle1());
         dto.setDetalle2(bh.getDetalle2());
         dto.setRamoId(bh.getRamo() != null ? bh.getRamo().getId() : null);

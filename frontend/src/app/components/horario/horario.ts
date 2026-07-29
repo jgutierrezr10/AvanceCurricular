@@ -22,6 +22,7 @@ export class Horario implements OnInit {
   private saveTimer: any = null;
   private savePending = false;
   private saveInFlight = false;
+  opcionActiva: number = 1;
 
   // Paleta de colores para los ramos
   private RAMO_COLORS = [
@@ -107,7 +108,7 @@ export class Horario implements OnInit {
       })
     );
 
-    const bloques$ = this.horarioService.obtenerHorario().pipe(
+    const bloques$ = this.horarioService.obtenerHorario(this.opcionActiva).pipe(
       timeout(TIMEOUT_MS),
       catchError(err => {
         console.error('Error/timeout al cargar bloques del horario:', err);
@@ -144,6 +145,13 @@ export class Horario implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  cambiarOpcion(opcion: number) {
+    if (this.opcionActiva === opcion) return;
+    this.opcionActiva = opcion;
+    this.inicializarGrilla();
+    this.cargarDatos();
   }
 
   cargarEtiquetasGuardadas() {
@@ -320,7 +328,7 @@ export class Horario implements OnInit {
     // Copiar el estado actual de la grilla para enviar
     const grillaSnapshot = this.grilla.map(b => ({ ...b }));
 
-    this.horarioService.guardarHorario(grillaSnapshot).subscribe({
+    this.horarioService.guardarHorario(grillaSnapshot, this.opcionActiva).subscribe({
       next: () => {
         this.saveInFlight = false;
         // Si hay un guardado pendiente, ejecutarlo ahora con el estado más reciente
@@ -358,7 +366,7 @@ export class Horario implements OnInit {
       if (result.isConfirmed) {
         this.guardando = true;
         this.cdr.detectChanges();
-        this.horarioService.limpiarHorario().subscribe({
+        this.horarioService.limpiarHorario(this.opcionActiva).subscribe({
           next: () => {
             this.grilla.forEach(b => {
               b.ramoId = null;

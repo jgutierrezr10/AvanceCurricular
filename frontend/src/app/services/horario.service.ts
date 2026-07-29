@@ -22,15 +22,15 @@ export class HorarioService {
 
   constructor(private http: HttpClient) {}
 
-  obtenerHorario(): Observable<BloqueHorarioDTO[]> {
-    return this.http.get<BloqueHorarioDTO[]>(this.apiUrl);
+  obtenerHorario(opcion: number = 1): Observable<BloqueHorarioDTO[]> {
+    return this.http.get<BloqueHorarioDTO[]>(`${this.apiUrl}?opcion=${opcion}`);
   }
 
-  guardarHorario(bloques: BloqueHorarioDTO[]): Observable<BloqueHorarioDTO[]> {
-    return this.http.post<BloqueHorarioDTO[]>(this.apiUrl, bloques);
+  guardarHorario(bloques: BloqueHorarioDTO[], opcion: number = 1): Observable<BloqueHorarioDTO[]> {
+    return this.http.post<BloqueHorarioDTO[]>(`${this.apiUrl}?opcion=${opcion}`, bloques);
   }
 
-  limpiarHorario(): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/limpiar`);
+  limpiarHorario(opcion: number = 1): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/limpiar?opcion=${opcion}`);
   }
 }

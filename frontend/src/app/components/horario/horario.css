@@ -310,6 +310,41 @@
   color: #94a3b8;
 }
 
+.slot-2 .ramo-select-visible.emp.btn-clean:hover {
+  background: rgba(220, 38, 38, 0.1);
+}
+
+.opciones-toggle {
+  display: flex;
+  background: var(--bg-card);
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  margin-left: auto;
+  margin-right: 1rem;
+}
+
+.btn-opcion {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-opcion:hover {
+  color: var(--text-main);
+}
+
+.btn-opcion.active {
+  background: var(--primary-color);
+  color: white;
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2);
+}
+
 /* ══════════════════════════════════════
    SKELETON LOADER
    ══════════════════════════════════════ */

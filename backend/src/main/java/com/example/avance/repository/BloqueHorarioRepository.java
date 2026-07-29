@@ -12,11 +12,11 @@ import java.util.Optional;
 
 @Repository
 public interface BloqueHorarioRepository extends JpaRepository<BloqueHorario, Long> {
-    List<BloqueHorario> findByUsuarioId(Long usuarioId);
-    Optional<BloqueHorario> findByUsuarioIdAndDiaAndHora(Long usuarioId, String dia, String hora);
+    List<BloqueHorario> findByUsuarioIdAndOpcion(Long usuarioId, Integer opcion);
+    Optional<BloqueHorario> findByUsuarioIdAndOpcionAndDiaAndHora(Long usuarioId, Integer opcion, String dia, String hora);
     @Modifying
-    @Query("DELETE FROM BloqueHorario b WHERE b.usuario.id = :usuarioId")
-    void deleteByUsuarioId(@Param("usuarioId") Long usuarioId);
+    @Query("DELETE FROM BloqueHorario b WHERE b.usuario.id = :usuarioId AND b.opcion = :opcion")
+    void deleteByUsuarioIdAndOpcion(@Param("usuarioId") Long usuarioId, @Param("opcion") Integer opcion);
 
     // Eliminar bloques que referencian un ramo como ramo principal
     @Modifying

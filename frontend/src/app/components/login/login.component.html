@@ -1,16 +1,20 @@
 <div class="auth-page">
-  <div class="blob blob-purple"></div>
-  <div class="blob blob-cyan"></div>
-  
-  <div class="auth-container glass-panel">
-    
+  <div class="auth-wrapper">
+    <!-- Panel Izquierdo -->
     <div class="auth-left">
       <div class="auth-brand">
-        <div class="brand-icon">
-          <img src="assets/images/logo.png" alt="AULA Logo" class="brand-logo-img" />
-        </div>
+        <img src="assets/images/logo.png" alt="AULA Logo" class="brand-logo-img" />
         <h1>AULA</h1>
-        <p>Visualiza y gestiona tu progreso académico de forma inteligente</p>
+      </div>
+      
+      <div class="auth-greeting">
+        <h2>¡Hola!</h2>
+        <h3>Bienvenido de nuevo.</h3>
+        <p>Organiza tu semestre,<br>gestiona tus ramos y<br>alcanza tus metas.</p>
+        <div class="mascot-container">
+          <div class="mascot-bubble">¡Vamos<br>a lograrlo! ♥</div>
+          <img src="assets/images/mascot.png" alt="Mascota" class="mascot-img" />
+        </div>
       </div>
 
       <div class="mascot-container" style="text-align: center; margin: 2rem 0;">
@@ -18,46 +22,44 @@
       </div>
       
       <div class="auth-features">
-        <div class="feature">
-          <i class="bi bi-grid-3x3-gap-fill"></i>
-          <span>Gestiona tu malla y avance</span>
+        <div class="feature-pill">
+          <div class="feature-icon bg-purple"><i class="bi bi-mortarboard-fill"></i></div>
+          <span>Todo tu mundo<br>académico</span>
         </div>
-        <div class="feature">
-          <i class="bi bi-journal-check"></i>
-          <span>Calcula notas y promedios</span>
+        <div class="feature-pill">
+          <div class="feature-icon bg-blue"><i class="bi bi-calendar2-check-fill"></i></div>
+          <span>Organizado y<br>al día</span>
         </div>
-        <div class="feature">
-          <i class="bi bi-calendar3"></i>
-          <span>Organiza horarios y eventos</span>
+        <div class="feature-pill">
+          <div class="feature-icon bg-indigo"><i class="bi bi-graph-up-arrow"></i></div>
+          <span>Enfocado en<br>tu éxito</span>
         </div>
       </div>
     </div>
 
+    <!-- Panel Derecho -->
     <div class="auth-right">
-      <div class="auth-form-container">
+      <div class="auth-form-card">
         <div class="card-header">
-          <h2>Iniciar Sesión</h2>
-          <p>Ingresa tus credenciales para continuar</p>
+          <img src="assets/images/logo.png" alt="AULA Logo" class="form-logo" />
+          <h2>AULA</h2>
+          <p>Tu aprendizaje, sin límites.</p>
         </div>
 
         <div class="form-group">
-          <label for="login-email">
-            <i class="bi bi-person"></i> Email o nombre
-          </label>
+          <label for="login-email">Correo electrónico</label>
           <div class="input-wrapper">
-            <i class="bi bi-person input-icon"></i>
-            <input id="login-email" type="text" [(ngModel)]="email" placeholder="tu@email.com o tu nombre"
+            <i class="bi bi-envelope input-icon"></i>
+            <input id="login-email" type="text" [(ngModel)]="email" placeholder="ejemplo@uc.cl"
               autocomplete="username" autofocus />
           </div>
         </div>
 
         <div class="form-group">
-          <label for="login-password">
-            <i class="bi bi-lock"></i> Contraseña
-          </label>
+          <label for="login-password">Contraseña</label>
           <div class="input-wrapper">
             <i class="bi bi-lock input-icon"></i>
-            <input id="login-password" [type]="mostrarPassword ? 'text' : 'password'" [(ngModel)]="password" placeholder="••••••••"
+            <input id="login-password" [type]="mostrarPassword ? 'text' : 'password'" [(ngModel)]="password" placeholder="Ingresa tu contraseña"
               autocomplete="current-password" (keyup.enter)="login()" style="padding-right: 48px;" />
             <i class="toggle-password bi" [ngClass]="mostrarPassword ? 'bi-eye-slash' : 'bi-eye'" 
                (click)="mostrarPassword = !mostrarPassword"></i>
@@ -67,7 +69,7 @@
         <div class="form-actions">
           <div class="checkbox-wrapper">
             <input type="checkbox" id="login-recordar" [(ngModel)]="recordarme" />
-            <label for="login-recordar">Guardar sesión</label>
+            <label for="login-recordar">Recordarme</label>
           </div>
           <a href="javascript:void(0)" (click)="recuperarPassword()" class="forgot-password-link">¿Olvidaste tu contraseña?</a>
         </div>
@@ -78,25 +80,40 @@
         </div>
 
         <button class="btn-submit" (click)="login()" [disabled]="cargando">
-          <i class="bi bi-box-arrow-in-right" *ngIf="!cargando"></i>
+          <span *ngIf="!cargando">Iniciar sesión</span>
+          <span *ngIf="cargando">Iniciando...</span>
+          <i class="bi bi-arrow-right" *ngIf="!cargando"></i>
           <i class="bi bi-arrow-repeat spin" *ngIf="cargando"></i>
-          {{ cargando ? 'Ingresando...' : 'Ingresar' }}
         </button>
 
         <div class="auth-divider">
-          <span>o</span>
+          <span>o continúa con</span>
         </div>
 
-        <div style="margin-bottom: 20px;">
-          <div id="google-btn"></div>
+        <div class="social-login">
+          <div class="btn-social google-container">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" class="social-icon" />
+            <span>Google</span>
+            <div id="google-btn" class="google-btn-overlay"></div>
+          </div>
+          <div class="btn-social">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" class="social-icon" />
+            <span>Microsoft</span>
+          </div>
+          <div class="btn-social">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub" class="social-icon" />
+            <span>GitHub</span>
+          </div>
         </div>
 
         <p class="auth-link">
-          ¿No tienes cuenta?
-          <a routerLink="/register">Regístrate aquí <i class="bi bi-arrow-right"></i></a>
+          ¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a>
         </p>
       </div>
     </div>
-    
+  </div>
+  
+  <div class="auth-footer">
+    <i class="bi bi-shield-check"></i> Seguro, privado y hecho para estudiantes.
   </div>
 </div>

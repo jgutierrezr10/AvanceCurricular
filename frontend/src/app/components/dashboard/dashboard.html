@@ -2,76 +2,207 @@
   <app-navbar></app-navbar>
 
   <main class="dashboard-container">
-    <header class="dashboard-header">
-      <h1>Hola, {{ nombreUsuario }}</h1>
-      <p>Bienvenido a tu centro de control académico.</p>
+    
+    <!-- Top Section: Welcome and Next Class -->
+    <section class="section-top">
       
-      <div class="info-banner">
-        <i class="bi bi-info-circle-fill"></i>
-        <span><strong>Recuerda:</strong> Para utilizar las funciones de Horario, Notas y Calendario, primero debes configurar tu <strong>Malla Curricular</strong> marcando los ramos que estás cursando.</span>
+      <!-- Welcome Card -->
+      <div class="welcome-card">
+        <div class="welcome-content">
+          <h1>¡Hola, {{ nombreUsuario }}! <span class="wave">👋</span></h1>
+          <p class="welcome-subtitle">¡Qué bueno verte de nuevo!<br>Vamos a lograr grandes cosas hoy.</p>
+          
+          <div class="stats-row">
+            <div class="stat-badge">
+              <div class="stat-icon icon-purple"><i class="bi bi-book"></i></div>
+              <div class="stat-info">
+                <span class="stat-value">{{ estadisticas.ramosInscritos }}</span>
+                <span class="stat-label">Ramos<br>inscritos</span>
+              </div>
+            </div>
+            <div class="stat-badge">
+              <div class="stat-icon icon-yellow"><i class="bi bi-star"></i></div>
+              <div class="stat-info">
+                <span class="stat-value">{{ estadisticas.promedioGeneral }}</span>
+                <span class="stat-label">Promedio<br>general</span>
+              </div>
+            </div>
+            <div class="stat-badge">
+              <div class="stat-icon icon-green"><i class="bi bi-fire"></i></div>
+              <div class="stat-info">
+                <span class="stat-value">{{ estadisticas.diasRacha }}</span>
+                <span class="stat-label">Días de<br>racha</span>
+              </div>
+            </div>
+            <div class="stat-badge">
+              <div class="stat-icon icon-blue"><i class="bi bi-clipboard-check"></i></div>
+              <div class="stat-info">
+                <span class="stat-value">{{ estadisticas.tareasPendientes }}</span>
+                <span class="stat-label">Tareas<br>pendientes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="welcome-illustration">
+          <img src="assets/images/pencil-mascot.png" alt="Mascota" class="mascot-img" onerror="this.style.display='none'">
+        </div>
       </div>
-    </header>
 
-    <div class="cards-grid">
-      <!-- Malla Card -->
-      <a routerLink="/malla" class="dash-card card-malla">
-        <div class="card-bg"></div>
-        <div class="card-icon">
-          <i class="bi bi-grid-3x3-gap-fill"></i>
+      <!-- Next Class Card -->
+      <div class="next-class-card">
+        <div class="card-header-small">
+          <div class="icon-square icon-purple-light"><i class="bi bi-calendar-event"></i></div>
+          <span>Próxima clase</span>
         </div>
-        <div class="card-content">
-          <h2>Malla Curricular</h2>
-          <p>Visualiza tu progreso, registra ramos aprobados y planifica tu avance académico general.</p>
-        </div>
-        <div class="card-arrow">
-          <i class="bi bi-arrow-right-short"></i>
-        </div>
-      </a>
+        <h3 class="class-title">{{ proximaClase.ramo }}</h3>
+        <ul class="class-details">
+          <li><span class="dot dot-purple"></span>{{ proximaClase.horario }}</li>
+          <li><i class="bi bi-clock history-icon"></i>{{ proximaClase.sala }}</li>
+        </ul>
+        <a routerLink="/horario" class="btn-outline-purple">Ver mi horario <i class="bi bi-arrow-right"></i></a>
+        <div class="books-illustration"></div>
+      </div>
 
-      <!-- Horario Card -->
-      <a routerLink="/horario" class="dash-card card-horario">
-        <div class="card-bg"></div>
-        <div class="card-icon">
-          <i class="bi bi-calendar3"></i>
-        </div>
-        <div class="card-content">
-          <h2>Mi Horario</h2>
-          <p>Organiza tu semana asignando los ramos que estás cursando a bloques de tiempo específicos.</p>
-        </div>
-        <div class="card-arrow">
-          <i class="bi bi-arrow-right-short"></i>
-        </div>
-      </a>
+    </section>
 
-      <!-- Notas Card -->
-      <a routerLink="/notas" class="dash-card card-notas">
-        <div class="card-bg"></div>
-        <div class="card-icon">
-          <i class="bi bi-journal-check"></i>
+    <!-- Middle Section: Modules -->
+    <section class="section-modules">
+      
+      <!-- Malla -->
+      <div class="dash-module-card module-malla">
+        <div class="module-header">
+          <div class="module-icon bg-purple"><i class="bi bi-grid-3x3-gap-fill"></i></div>
         </div>
-        <div class="card-content">
-          <h2>Notas y Promedios</h2>
-          <p>Registra las calificaciones de tus asignaturas, define ponderaciones y calcula tu promedio automáticamente.</p>
+        <div class="module-body">
+          <h3>Malla Curricular</h3>
+          <p>Visualiza tu progreso, registra ramos aprobados y planifica tu avance académico.</p>
+          <div class="module-widget">
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" [style.width]="progresoMalla + '%'"></div>
+            </div>
+            <span class="progress-text">{{ progresoMalla }}%</span>
+          </div>
         </div>
-        <div class="card-arrow">
-          <i class="bi bi-arrow-right-short"></i>
+        <div class="module-footer">
+          <a routerLink="/malla" class="module-link text-purple">Ver malla</a>
+          <i class="bi bi-arrow-right text-purple"></i>
         </div>
-      </a>
+      </div>
 
-      <!-- Calendario Card -->
-      <a routerLink="/calendario" class="dash-card card-calendario">
-        <div class="card-bg"></div>
-        <div class="card-icon">
-          <i class="bi bi-calendar-event-fill"></i>
+      <!-- Horario -->
+      <div class="dash-module-card module-horario">
+        <div class="module-header">
+          <div class="module-icon bg-blue"><i class="bi bi-calendar3"></i></div>
         </div>
-        <div class="card-content">
-          <h2>Calendario</h2>
-          <p>Planifica tus certámenes, controles y entregas futuras organizadas cronológicamente.</p>
+        <div class="module-body">
+          <h3>Mi Horario</h3>
+          <p>Organiza tu semana asignando los ramos que estás cursando a bloques de tiempo.</p>
+          <div class="module-widget mini-week">
+            <div class="day"><span class="day-label">L</span><span class="day-dot dot-purple-light"></span></div>
+            <div class="day"><span class="day-label">M</span><span class="day-dot dot-blue"></span></div>
+            <div class="day"><span class="day-label">M</span><span class="day-dot dot-green"></span></div>
+            <div class="day"><span class="day-label">J</span><span class="day-dot dot-blue-dark"></span></div>
+            <div class="day"><span class="day-label">V</span><span class="day-dot dot-empty"></span></div>
+            <div class="day"><span class="day-label">S</span><span class="day-dot dot-empty"></span></div>
+            <div class="day"><span class="day-label">D</span><span class="day-dot dot-empty"></span></div>
+          </div>
         </div>
-        <div class="card-arrow">
-          <i class="bi bi-arrow-right-short"></i>
+        <div class="module-footer">
+          <a routerLink="/horario" class="module-link text-blue">Ver horario</a>
+          <i class="bi bi-arrow-right text-blue"></i>
         </div>
-      </a>
-    </div>
+      </div>
+
+      <!-- Notas -->
+      <div class="dash-module-card module-notas">
+        <div class="module-header">
+          <div class="module-icon bg-yellow"><i class="bi bi-graph-up"></i></div>
+        </div>
+        <div class="module-body">
+          <h3>Notas y Promedios</h3>
+          <p>Registra tus calificaciones, calcula promedios y analiza tu rendimiento.</p>
+          <div class="module-widget">
+            <span class="widget-label">Promedio actual</span>
+            <div class="grade-display">
+              <span class="grade-highlight text-yellow">{{ promedioActual.split(' / ')[0] }}</span> 
+              <span class="grade-total">/ {{ promedioActual.split(' / ')[1] }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="module-footer">
+          <a routerLink="/notas" class="module-link text-yellow">Ver notas</a>
+          <i class="bi bi-arrow-right text-yellow"></i>
+        </div>
+      </div>
+
+      <!-- Calendario -->
+      <div class="dash-module-card module-calendario">
+        <div class="module-header">
+          <div class="module-icon bg-pink"><i class="bi bi-calendar-event"></i></div>
+        </div>
+        <div class="module-body">
+          <h3>Calendario</h3>
+          <p>Revisa tus eventos, fechas importantes y entregas todas en un solo lugar.</p>
+          <div class="module-widget delivery-widget">
+            <span class="widget-label">Próxima entrega</span>
+            <div class="delivery-info">
+              <div class="delivery-name"><i class="bi bi-calendar2-check text-pink"></i> {{ proximaEntrega.nombre }}</div>
+              <div class="delivery-date text-pink">{{ proximaEntrega.fecha }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="module-footer">
+          <a routerLink="/calendario" class="module-link text-pink">Ver calendario</a>
+          <i class="bi bi-arrow-right text-pink"></i>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Bottom Section: Tasks and Events -->
+    <section class="section-bottom">
+      
+      <!-- Tasks Card -->
+      <div class="tasks-card">
+        <div class="card-header">
+          <div class="header-title">
+            <div class="icon-square bg-purple"><i class="bi bi-check2-square"></i></div>
+            <h2>Tareas pendientes</h2>
+            <span class="badge-count">{{ tareasPendientesList.length }}</span>
+          </div>
+        </div>
+        <div class="tasks-list">
+          <div class="task-item" *ngFor="let task of tareasPendientesList">
+            <div class="task-radio"></div>
+            <div class="task-name">{{ task.nombre }}</div>
+            <div class="task-course">{{ task.ramo }}</div>
+            <div class="task-date text-pink">{{ task.fecha }}</div>
+          </div>
+        </div>
+        <div class="tasks-illustration"></div>
+      </div>
+
+      <!-- Events Card -->
+      <div class="events-card">
+        <div class="card-header">
+          <div class="header-title">
+            <div class="icon-square bg-blue-light"><i class="bi bi-calendar2-event"></i></div>
+            <h2>Eventos próximos</h2>
+          </div>
+        </div>
+        <div class="events-list">
+          <div class="event-item" *ngFor="let ev of eventosProximos">
+            <div class="event-dot dot-{{ ev.color }}"></div>
+            <div class="event-details">
+              <div class="event-title">{{ ev.titulo }}</div>
+              <div class="event-time">{{ ev.fecha }} &bull; {{ ev.hora }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="events-illustration"></div>
+      </div>
+
+    </section>
+
   </main>
 </div>

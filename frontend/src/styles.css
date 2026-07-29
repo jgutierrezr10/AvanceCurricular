@@ -92,7 +92,12 @@ html {
 
 body {
   min-height: 100vh;
-  background: var(--bg-main);
+  background-color: var(--bg-main);
+  background-image: 
+    linear-gradient(rgba(108, 99, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(108, 99, 255, 0.07) 1px, transparent 1px);
+  background-size: 25px 25px;
+  background-position: center top;
   color: var(--text-main);
 }
 

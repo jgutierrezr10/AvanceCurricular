@@ -111,13 +111,12 @@ export class App implements AfterViewInit, OnInit {
     this.ctx.moveTo(this.lastX, this.lastY);
     this.ctx.lineTo(event.clientX, event.clientY);
     
-    // Estilo tipo lápiz grafito
-    this.ctx.strokeStyle = 'rgba(71, 85, 105, 0.75)'; // Gris oscuro semi-transparente
-    this.ctx.lineWidth = 3;
+    // Tinta morada original
+    this.ctx.strokeStyle = '#5b21b6';
+    this.ctx.lineWidth = 2;
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
-    this.ctx.shadowBlur = 1.5;
-    this.ctx.shadowColor = 'rgba(71, 85, 105, 0.5)'; // Ligero difuminado para el grafito
+    this.ctx.shadowBlur = 0;
     
     this.ctx.stroke();
 

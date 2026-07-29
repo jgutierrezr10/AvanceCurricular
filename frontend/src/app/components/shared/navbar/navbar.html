@@ -1,21 +1,50 @@
-<nav class="navbar">
-  <a routerLink="/dashboard" class="nav-brand">
-    <img src="assets/images/logo.png" alt="Logo" class="nav-brand-img" style="height: 60px; width: auto; object-fit: contain; margin-right: 8px;" />
-    <span style="font-size: 1.5rem;">AULA</span>
-  </a>
-  <div class="nav-user">
-    <div class="user-info">
-      <i class="bi bi-person-circle"></i>
-      <span>{{ nombreUsuario }}</span>
+<div class="navbar-wrapper">
+  <nav class="navbar-content">
+    <a routerLink="/dashboard" class="nav-brand">
+      <img src="assets/images/logo.png" alt="Logo" class="nav-brand-img" style="height: 32px; width: auto; object-fit: contain; margin-right: 8px;" />
+      <span>AULA</span>
+    </a>
+    
+    <div class="nav-links">
+      <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+        <i class="bi bi-house-door"></i> Dashboard
+      </a>
+      <a routerLink="/horario" routerLinkActive="active" class="nav-link">
+        <i class="bi bi-calendar3"></i> Horario
+      </a>
+      <a routerLink="/notas" routerLinkActive="active" class="nav-link">
+        <i class="bi bi-check2-square"></i> Notas
+      </a>
+      <a routerLink="/calendario" routerLinkActive="active" class="nav-link">
+        <i class="bi bi-calendar-event"></i> Calendario
+      </a>
+      <a routerLink="/malla" routerLinkActive="active" class="nav-link">
+        <i class="bi bi-grid-3x3"></i> Malla
+      </a>
     </div>
-    <button class="btn-cuenta" (click)="abrirMiCuenta()">
-      <i class="bi bi-gear-fill"></i> Mi Cuenta
-    </button>
-    <button class="btn-logout" (click)="logout()">
-      <i class="bi bi-box-arrow-right"></i> Salir
-    </button>
-  </div>
-</nav>
+
+    <div class="nav-actions">
+      <button class="nav-icon-btn">
+        <i class="bi bi-bell"></i>
+        <span class="badge"></span>
+      </button>
+      <button class="nav-icon-btn search-btn">
+        <i class="bi bi-search"></i>
+      </button>
+      
+      <div class="nav-profile" (click)="abrirMiCuenta()">
+        <div class="avatar-circle">
+          {{ nombreUsuario ? nombreUsuario.charAt(0).toUpperCase() : 'U' }}
+        </div>
+        <div class="profile-text">
+          <span class="user-name">{{ nombreUsuario }}</span>
+          <span class="user-role">Estudiante</span>
+        </div>
+        <i class="bi bi-chevron-down profile-chevron"></i>
+      </div>
+    </div>
+  </nav>
+</div>
 
 <!-- Modal "Mi Cuenta" -->
 <div class="overlay" *ngIf="mostrarModalCuenta" (click)="cerrarMiCuenta()">
@@ -86,13 +115,18 @@
       </div>
 
       <div class="modal-acciones">
-        <button type="button" class="btn-cancelar" (click)="cerrarMiCuenta()" [disabled]="guardando">
-          Cancelar
+        <button type="button" class="btn-logout-modal" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i> Salir
         </button>
-        <button type="submit" class="btn-guardar" [disabled]="guardando">
-          <i class="bi bi-save-fill" *ngIf="!guardando"></i>
-          <span>{{ guardando ? 'Guardando...' : 'Guardar Cambios' }}</span>
-        </button>
+        <div class="modal-acciones-right">
+          <button type="button" class="btn-cancelar" (click)="cerrarMiCuenta()" [disabled]="guardando">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-guardar" [disabled]="guardando">
+            <i class="bi bi-save-fill" *ngIf="!guardando"></i>
+            <span>{{ guardando ? 'Guardando...' : 'Guardar Cambios' }}</span>
+          </button>
+        </div>
       </div>
     </form>
   </div>

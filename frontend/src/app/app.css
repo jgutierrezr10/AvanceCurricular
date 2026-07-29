@@ -81,7 +81,8 @@
 }
 
 .drawing-tools:hover + .btn-clear-canvas,
-.btn-clear-canvas:hover {
+.btn-clear-canvas:hover,
+.btn-clear-canvas.show-always {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0) scale(1);

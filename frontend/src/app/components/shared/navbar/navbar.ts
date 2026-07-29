@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { UpdateUserRequest } from '../../../models/usuario.model';
@@ -8,7 +8,7 @@ import { UpdateUserRequest } from '../../../models/usuario.model';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css'
 })

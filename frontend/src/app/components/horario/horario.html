@@ -19,6 +19,13 @@
       <span>No tienes ramos marcados como "Cursando" en tu Malla. Ve a tu malla y marca los ramos que estás tomando actualmente para poder armar tu horario.</span>
     </div>
 
+    <div class="horario-stats" *ngIf="!cargandoHorario && ramosCursando.length > 0">
+      <div class="stat-badge" [class.complete]="ramosEnHorario === ramosCursando.length">
+        <i class="bi" [ngClass]="ramosEnHorario === ramosCursando.length ? 'bi-check-circle-fill' : 'bi-pie-chart-fill'"></i>
+        Ramos asignados: <strong>{{ ramosEnHorario }} / {{ ramosCursando.length }}</strong>
+      </div>
+    </div>
+
     <div class="grid-container">
       <!-- Skeleton Loading -->
       <div class="skeleton-container" *ngIf="cargandoHorario">

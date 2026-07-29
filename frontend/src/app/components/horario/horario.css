@@ -90,6 +90,51 @@
   font-size: 1.5rem;
 }
 
+.horario-stats {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.stat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-card);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.stat-badge strong {
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.stat-badge i {
+  color: #64748b;
+  font-size: 1.1rem;
+}
+
+.stat-badge.complete {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.stat-badge.complete strong {
+  color: #15803d;
+}
+
+.stat-badge.complete i {
+  color: #22c55e;
+}
+
 .grid-container {
   background: var(--bg-card);
   border-radius: var(--radius-md);

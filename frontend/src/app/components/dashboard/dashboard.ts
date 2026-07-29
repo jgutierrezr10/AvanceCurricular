@@ -164,12 +164,27 @@ export class Dashboard implements OnInit {
 
       const getLabel = (bloqueHoraStr: string) => (etiquetasHora as any)[bloqueHoraStr] || etiquetasPorDefecto[bloqueHoraStr] || bloqueHoraStr;
       const getEndTime = (bloqueHoraStr: string) => {
-        const parts = getLabel(bloqueHoraStr).split(' - ');
-        return parts.length > 1 ? parts[1] : '23:59';
+        const parts = getLabel(bloqueHoraStr).split('-');
+        return parts.length > 1 ? parts[1].trim() : '23:59';
       };
 
+      const timeToMinutes = (timeStr: string) => {
+        let str = timeStr.toLowerCase().trim();
+        let isPM = str.includes('p');
+        let isAM = str.includes('a');
+        str = str.replace(/[^\d:]/g, '');
+        let parts = str.split(':');
+        let h = parseInt(parts[0] || '0', 10);
+        let m = parseInt(parts[1] || '0', 10);
+        if (isPM && h < 12) h += 12;
+        if (isAM && h === 12) h = 0;
+        return h * 60 + m;
+      };
+
+      const currentTimeMins = timeToMinutes(currentTime);
+
       const bloquesHoy = bloques.filter(b => b.dia === diaHoyStr && b.ramoId)
-                                .filter(b => getEndTime(b.hora) >= currentTime);
+                                .filter(b => timeToMinutes(getEndTime(b.hora)) >= currentTimeMins);
       
       if (bloquesHoy.length > 0) {
         const b = bloquesHoy[0];

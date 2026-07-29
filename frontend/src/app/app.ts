@@ -46,6 +46,27 @@ export class App implements AfterViewInit, OnInit {
     const canvas = this.canvasRef.nativeElement;
     this.ctx = canvas.getContext('2d');
     this.resizeCanvas();
+    this.loadCanvasFromStorage();
+  }
+
+  private saveCanvasToStorage() {
+    if (this.canvasRef) {
+      const dataUrl = this.canvasRef.nativeElement.toDataURL();
+      localStorage.setItem('canvas_drawing', dataUrl);
+    }
+  }
+
+  private loadCanvasFromStorage() {
+    const dataUrl = localStorage.getItem('canvas_drawing');
+    if (dataUrl && this.ctx) {
+      const img = new Image();
+      img.onload = () => {
+        if (this.ctx) {
+          this.ctx.drawImage(img, 0, 0);
+        }
+      };
+      img.src = dataUrl;
+    }
   }
 
   @HostListener('window:resize')
@@ -79,6 +100,7 @@ export class App implements AfterViewInit, OnInit {
     if (this.ctx && this.canvasRef) {
       const canvas = this.canvasRef.nativeElement;
       this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+      localStorage.removeItem('canvas_drawing');
     }
   }
 
@@ -126,7 +148,10 @@ export class App implements AfterViewInit, OnInit {
 
   @HostListener('document:mouseup')
   onMouseUp() {
-    this.isDrawing = false;
+    if (this.isDrawing) {
+      this.isDrawing = false;
+      this.saveCanvasToStorage();
+    }
   }
 }
 

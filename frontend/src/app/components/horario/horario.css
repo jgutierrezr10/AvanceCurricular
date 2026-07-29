@@ -1,6 +1,6 @@
 .horario-page {
   min-height: 100vh;
-  background: var(--bg-main);
+  background: transparent;
   font-family: inherit;
   color: var(--text-main);
 }

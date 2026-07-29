@@ -4,7 +4,7 @@
 
 .layout {
   min-height: 100vh;
-  background: var(--bg-card);
+  background: transparent;
   display: flex;
   flex-direction: column;
   font-family: inherit;

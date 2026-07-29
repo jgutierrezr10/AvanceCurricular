@@ -27,20 +27,7 @@
                 <span class="stat-label">Promedio<br>general</span>
               </div>
             </div>
-            <div class="stat-badge">
-              <div class="stat-icon icon-green"><i class="bi bi-fire"></i></div>
-              <div class="stat-info">
-                <span class="stat-value">{{ estadisticas.diasRacha }}</span>
-                <span class="stat-label">Días de<br>racha</span>
-              </div>
-            </div>
-            <div class="stat-badge">
-              <div class="stat-icon icon-blue"><i class="bi bi-clipboard-check"></i></div>
-              <div class="stat-info">
-                <span class="stat-value">{{ estadisticas.tareasPendientes }}</span>
-                <span class="stat-label">Tareas<br>pendientes</span>
-              </div>
-            </div>
+            <!-- Remove racha and tareas -->
           </div>
         </div>
         <div class="welcome-illustration">
@@ -98,13 +85,13 @@
           <h3>Mi Horario</h3>
           <p>Organiza tu semana asignando los ramos que estás cursando a bloques de tiempo.</p>
           <div class="module-widget mini-week">
-            <div class="day"><span class="day-label">L</span><span class="day-dot dot-purple-light"></span></div>
-            <div class="day"><span class="day-label">M</span><span class="day-dot dot-blue"></span></div>
-            <div class="day"><span class="day-label">M</span><span class="day-dot dot-green"></span></div>
-            <div class="day"><span class="day-label">J</span><span class="day-dot dot-blue-dark"></span></div>
-            <div class="day"><span class="day-label">V</span><span class="day-dot dot-empty"></span></div>
-            <div class="day"><span class="day-label">S</span><span class="day-dot dot-empty"></span></div>
-            <div class="day"><span class="day-label">D</span><span class="day-dot dot-empty"></span></div>
+            <div class="day"><span class="day-label">L</span><span class="day-dot" [ngClass]="diasConClases.L ? 'dot-purple-light' : 'dot-empty'"></span></div>
+            <div class="day"><span class="day-label">M</span><span class="day-dot" [ngClass]="diasConClases.M ? 'dot-blue' : 'dot-empty'"></span></div>
+            <div class="day"><span class="day-label">M</span><span class="day-dot" [ngClass]="diasConClases.X ? 'dot-green' : 'dot-empty'"></span></div>
+            <div class="day"><span class="day-label">J</span><span class="day-dot" [ngClass]="diasConClases.J ? 'dot-yellow' : 'dot-empty'"></span></div>
+            <div class="day"><span class="day-label">V</span><span class="day-dot" [ngClass]="diasConClases.V ? 'dot-pink' : 'dot-empty'"></span></div>
+            <div class="day"><span class="day-label">S</span><span class="day-dot" [ngClass]="diasConClases.S ? 'dot-blue-dark' : 'dot-empty'"></span></div>
+            <div class="day"><span class="day-label">D</span><span class="day-dot" [ngClass]="diasConClases.D ? 'dot-purple' : 'dot-empty'"></span></div>
           </div>
         </div>
         <div class="module-footer">
@@ -162,27 +149,7 @@
     <!-- Bottom Section: Tasks and Events -->
     <section class="section-bottom">
       
-      <!-- Tasks Card -->
-      <div class="tasks-card">
-        <div class="card-header">
-          <div class="header-title">
-            <div class="icon-square bg-purple"><i class="bi bi-check2-square"></i></div>
-            <h2>Tareas pendientes</h2>
-            <span class="badge-count">{{ tareasPendientesList.length }}</span>
-          </div>
-        </div>
-        <div class="tasks-list">
-          <div class="task-item" *ngFor="let task of tareasPendientesList">
-            <div class="task-radio"></div>
-            <div class="task-name">{{ task.nombre }}</div>
-            <div class="task-course">{{ task.ramo }}</div>
-            <div class="task-date text-pink">{{ task.fecha }}</div>
-          </div>
-        </div>
-        <div class="tasks-illustration"></div>
-      </div>
-
-      <!-- Events Card -->
+      <!-- Tasks Card removed as per option B -->      <!-- Events Card -->
       <div class="events-card">
         <div class="card-header">
           <div class="header-title">

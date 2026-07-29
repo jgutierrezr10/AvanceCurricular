@@ -3,6 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Navbar } from '../shared/navbar/navbar';
+import { RamoService } from '../../services/ramo.service';
+import { HorarioService, BloqueHorarioDTO } from '../../services/horario.service';
+import { EvaluacionService } from '../../services/evaluacion.service';
+import { Ramo } from '../../models/ramo.model';
+import { Evaluacion } from '../../models/evaluacion.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,41 +19,36 @@ import { Navbar } from '../shared/navbar/navbar';
 export class Dashboard implements OnInit {
   nombreUsuario = '';
 
-  // Datos Simulados
   estadisticas = {
-    ramosInscritos: 8,
-    promedioGeneral: 6.2,
-    diasRacha: 18,
-    tareasPendientes: 4
+    ramosInscritos: 0,
+    promedioGeneral: 0.0
   };
 
   proximaClase = {
-    ramo: 'Estructuras de Datos',
-    horario: 'Hoy, 10:00 AM – 11:30 AM',
-    sala: 'Sala B203'
+    ramo: 'Sin clases hoy',
+    horario: '--:-- – --:--',
+    sala: 'N/A'
   };
 
-  progresoMalla = 61;
-  promedioActual = '6.2 / 7.0';
+  progresoMalla = 0;
+  promedioActual = '0.0 / 7.0';
   proximaEntrega = {
-    nombre: 'Informe Laboratorio 2',
-    fecha: '24 May 2025'
+    nombre: 'Sin entregas pendientes',
+    fecha: '--'
   };
 
-  tareasPendientesList = [
-    { id: 1, nombre: 'Informe Laboratorio 2', ramo: 'Estructuras de Datos', fecha: '24 May' },
-    { id: 2, nombre: 'Ejercicios Capítulo 5', ramo: 'Matemáticas Discretas', fecha: '26 May' },
-    { id: 3, nombre: 'Presentación Grupo 3', ramo: 'Ingeniería de Software', fecha: '28 May' },
-    { id: 4, nombre: 'Quiz Algoritmos', ramo: 'Algoritmos y Programación', fecha: '30 May' }
-  ];
+  eventosProximos: any[] = [];
+  
+  diasConClases = {
+    L: false, M: false, X: false, J: false, V: false, S: false, D: false
+  };
 
-  eventosProximos = [
-    { id: 1, titulo: 'Prueba 2 - Estructuras de Datos', fecha: '28 May 2025', hora: '10:00 AM', color: 'pink' },
-    { id: 2, titulo: 'Tutoría de Álgebra', fecha: '30 May 2025', hora: '04:00 PM', color: 'blue' },
-    { id: 3, titulo: 'Entrega Proyecto 1', fecha: '02 Jun 2025', hora: '11:59 PM', color: 'green' }
-  ];
-
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private ramoService: RamoService,
+    private horarioService: HorarioService,
+    private evaluacionService: EvaluacionService
+  ) {}
 
   ngOnInit() {
     const usuario = this.authService.getUsuario();
@@ -57,6 +57,140 @@ export class Dashboard implements OnInit {
     } else {
       this.nombreUsuario = 'Estudiante';
     }
+
+    this.cargarDatos();
+  }
+
+  cargarDatos() {
+    // 1. Cargar Ramos (Malla)
+    this.ramoService.getMallaUsuario().subscribe(ramos => {
+      // Progreso Malla y Ramos Inscritos
+      const aprobados = ramos.filter(r => r.aprobado);
+      const cursando = ramos.filter(r => r.cursando);
+      
+      this.estadisticas.ramosInscritos = cursando.length;
+      if (ramos.length > 0) {
+        this.progresoMalla = Math.round((aprobados.length / ramos.length) * 100);
+      }
+
+      // Promedio General (de ramos aprobados que tengan nota)
+      const ramosConNota = aprobados.filter(r => r.nota && r.nota > 0);
+      if (ramosConNota.length > 0) {
+        const suma = ramosConNota.reduce((acc, r) => acc + (r.nota || 0), 0);
+        this.estadisticas.promedioGeneral = Number((suma / ramosConNota.length).toFixed(1));
+      }
+
+      // 2. Cargar Evaluaciones
+      this.evaluacionService.getEvaluaciones().subscribe(evaluaciones => {
+        // Filtrar evaluaciones futuras
+        const hoy = new Date();
+        hoy.setHours(0,0,0,0);
+        
+        const futuras = evaluaciones.filter(e => {
+          if (!e.fecha) return false;
+          const fechaEv = new Date(e.fecha);
+          // Ajustar por zona horaria simple
+          fechaEv.setMinutes(fechaEv.getMinutes() + fechaEv.getTimezoneOffset());
+          return fechaEv >= hoy;
+        }).sort((a, b) => {
+          return new Date(a.fecha!).getTime() - new Date(b.fecha!).getTime();
+        });
+
+        const colors = ['pink', 'blue', 'green', 'yellow', 'purple'];
+        this.eventosProximos = futuras.slice(0, 4).map((e, index) => {
+          const ramoRelacionado = ramos.find(r => r.id === e.ramoId);
+          return {
+            id: e.id,
+            titulo: e.nombre + (ramoRelacionado ? ` - ${ramoRelacionado.nombre}` : ''),
+            fecha: this.formatearFecha(e.fecha!),
+            hora: 'Por definir', // Evaluaciones no tienen hora exacta en el modelo actual
+            color: colors[index % colors.length]
+          };
+        });
+
+        if (this.eventosProximos.length > 0) {
+          this.proximaEntrega = {
+            nombre: futuras[0].nombre,
+            fecha: this.formatearFecha(futuras[0].fecha!)
+          };
+        }
+
+        // Calcular promedio actual (de evaluaciones con nota)
+        const conNota = evaluaciones.filter(e => e.nota && e.nota > 0);
+        if (conNota.length > 0) {
+          const sumaNotas = conNota.reduce((acc, e) => acc + (e.nota! * (e.ponderacion / 100)), 0);
+          const sumaPond = conNota.reduce((acc, e) => acc + (e.ponderacion / 100), 0);
+          const prom = sumaPond > 0 ? sumaNotas / sumaPond : 0;
+          this.promedioActual = `${prom.toFixed(1)} / 7.0`;
+        }
+      });
+    });
+
+    // 3. Cargar Horario
+    this.horarioService.obtenerHorario(1).subscribe(bloques => {
+      // Marcar días con clases
+      const diasMap: { [key: string]: keyof typeof this.diasConClases } = {
+        'Lunes': 'L', 'Martes': 'M', 'Miercoles': 'X', 'Jueves': 'J', 'Viernes': 'V', 'Sabado': 'S', 'Domingo': 'D'
+      };
+
+      const diasConClasesSet = new Set<string>();
+
+      bloques.forEach(b => {
+        if (b.ramoId) {
+          diasConClasesSet.add(b.dia);
+        }
+      });
+
+      diasConClasesSet.forEach(diaStr => {
+        const diaLetra = diasMap[diaStr];
+        if (diaLetra) {
+          this.diasConClases[diaLetra] = true;
+        }
+      });
+
+      // Calcular próxima clase (simplificado: primer bloque de hoy o mañana)
+      const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
+      const hoyIdx = new Date().getDay();
+      const diaHoyStr = diasSemana[hoyIdx];
+
+      const bloquesHoy = bloques.filter(b => b.dia === diaHoyStr && b.ramoId);
+      
+      if (bloquesHoy.length > 0) {
+        // Asumimos que están ordenados o tomamos el primero
+        const b = bloquesHoy[0];
+        // Buscar el nombre del ramo (requiere tener la lista de ramos, la cargamos antes)
+        this.ramoService.getMallaUsuario().subscribe(ramos => {
+          const ramo = ramos.find(r => r.id === b.ramoId);
+          this.proximaClase = {
+            ramo: ramo ? ramo.nombre : 'Clase',
+            horario: `Hoy, ${b.hora}`,
+            sala: b.detalle1 || b.detalle2 || 'Sala por definir'
+          };
+        });
+      } else {
+        // Buscar clase mañana
+        const diaMananaStr = diasSemana[(hoyIdx + 1) % 7];
+        const bloquesManana = bloques.filter(b => b.dia === diaMananaStr && b.ramoId);
+        if (bloquesManana.length > 0) {
+          const b = bloquesManana[0];
+          this.ramoService.getMallaUsuario().subscribe(ramos => {
+            const ramo = ramos.find(r => r.id === b.ramoId);
+            this.proximaClase = {
+              ramo: ramo ? ramo.nombre : 'Clase',
+              horario: `Mañana, ${b.hora}`,
+              sala: b.detalle1 || b.detalle2 || 'Sala por definir'
+            };
+          });
+        }
+      }
+    });
+  }
+
+  private formatearFecha(fechaStr: string): string {
+    const fecha = new Date(fechaStr);
+    fecha.setMinutes(fecha.getMinutes() + fecha.getTimezoneOffset()); // Fix timezone issue
+    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    return `${fecha.getDate()} ${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
   }
 
   logout() {

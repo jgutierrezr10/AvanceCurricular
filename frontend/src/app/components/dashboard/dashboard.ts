@@ -129,7 +129,7 @@ export class Dashboard implements OnInit {
     // 3. Cargar Horario
     this.horarioService.obtenerHorario(1).subscribe(bloques => {
       // Marcar días con clases
-      const diasMap: { [key: string]: keyof typeof this.diasConClases } = {
+      const diasMap: { [key: string]: 'L' | 'M' | 'X' | 'J' | 'V' | 'S' | 'D' } = {
         'Lunes': 'L', 'Martes': 'M', 'Miercoles': 'X', 'Jueves': 'J', 'Viernes': 'V', 'Sabado': 'S', 'Domingo': 'D'
       };
 

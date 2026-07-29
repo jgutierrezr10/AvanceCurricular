@@ -53,6 +53,13 @@ export class App implements AfterViewInit {
     }
   }
 
+  clearCanvas() {
+    if (this.ctx && this.canvasRef) {
+      const canvas = this.canvasRef.nativeElement;
+      this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+
   @HostListener('document:mousedown', ['$event'])
   onMouseDown(event: MouseEvent) {
     const target = event.target as HTMLElement;

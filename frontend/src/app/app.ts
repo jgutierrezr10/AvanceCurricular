@@ -1,13 +1,14 @@
-import { Component, signal, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
+import { Component, signal, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App implements AfterViewInit {
+export class App implements AfterViewInit, OnInit {
   protected readonly title = signal('frontend');
 
   @ViewChild('bgCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -15,6 +16,27 @@ export class App implements AfterViewInit {
   private isDrawing = false;
   private lastX = 0;
   private lastY = 0;
+  
+  isDarkMode = false;
+
+  ngOnInit() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      this.isDarkMode = true;
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  }
+
+  toggleTheme() {
+    this.isDarkMode = !this.isDarkMode;
+    if (this.isDarkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+    }
+  }
 
   ngAfterViewInit() {
     this.initCanvas();
@@ -88,10 +110,15 @@ export class App implements AfterViewInit {
     this.ctx.beginPath();
     this.ctx.moveTo(this.lastX, this.lastY);
     this.ctx.lineTo(event.clientX, event.clientY);
-    this.ctx.strokeStyle = '#5b21b6'; // Dark purple ink
-    this.ctx.lineWidth = 2;
+    
+    // Estilo tipo lápiz grafito
+    this.ctx.strokeStyle = 'rgba(71, 85, 105, 0.75)'; // Gris oscuro semi-transparente
+    this.ctx.lineWidth = 3;
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
+    this.ctx.shadowBlur = 1.5;
+    this.ctx.shadowColor = 'rgba(71, 85, 105, 0.5)'; // Ligero difuminado para el grafito
+    
     this.ctx.stroke();
 
     this.lastX = event.clientX;

@@ -27,14 +27,14 @@
 }
 
 .btn-back {
-  color: #64748b;
+  color: var(--text-muted);
   background: transparent;
   border: 1px solid transparent;
 }
 
 .btn-back:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--bg-main);
+  color: var(--text-main);
 }
 
 .page-title {
@@ -117,7 +117,7 @@
 }
 
 .stat-badge i {
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 1.1rem;
 }
 
@@ -160,7 +160,7 @@
 }
 
 .horario-table th {
-  background: #f8fafc;
+  background: var(--bg-main);
   font-weight: 600;
   color: #475569;
   height: 50px;
@@ -175,9 +175,9 @@
 }
 
 .time-cell {
-  background: #f8fafc;
+  background: var(--bg-main);
   font-weight: 600;
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -186,7 +186,7 @@
 
 .time-cell:hover {
   background: #e2e8f0;
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .time-cell .edit-icon {
@@ -207,24 +207,24 @@
   border-radius: 4px;
   font-family: inherit;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--text-main);
   text-align: center;
   outline: none;
 }
 
 .time-cell.editing {
-  background: #ffffff;
+  background: var(--bg-card);
   padding: 0;
 }
 
 .drop-cell {
   position: relative;
-  background: #ffffff;
+  background: var(--bg-card);
   transition: background 0.2s ease;
 }
 
 .drop-cell:hover {
-  background: #f1f5f9;
+  background: var(--bg-main);
 }
 
 .cell-wrapper {
@@ -238,7 +238,7 @@
 }
 
 .cell-wrapper.has-content {
-  background: #f1f5f9;
+  background: var(--bg-main);
 }
 
 .ramo-slot {
@@ -252,7 +252,7 @@
 }
 
 .ramo-slot.filled {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid #c7d2fe;
   box-shadow: 0 1px 3px rgba(79, 70, 229, 0.1);
 }
@@ -281,7 +281,7 @@
   width: 100%;
   padding: 0.2rem;
   font-size: 0.7rem;
-  color: #64748b;
+  color: var(--text-muted);
   border: 1px dashed #cbd5e1;
   border-radius: 4px;
   text-align: center;
@@ -293,7 +293,7 @@
 .detalle-input:focus {
   border-style: solid;
   border-color: #4f46e5;
-  background: #ffffff;
+  background: var(--bg-card);
 }
 
 .slot-2 {
@@ -317,7 +317,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid #e2e8f0;
@@ -327,7 +327,7 @@
 .skeleton-header {
   display: flex;
   gap: 2px;
-  background: #f8fafc;
+  background: var(--bg-main);
   padding: 0;
   height: 50px;
 }
@@ -349,7 +349,7 @@
 
 .skeleton-time {
   width: 120px;
-  background: #f8fafc;
+  background: var(--bg-main);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -366,7 +366,7 @@
 
 .skeleton-cell {
   flex: 1;
-  background: #ffffff;
+  background: var(--bg-card);
   border-left: 1px solid #e2e8f0;
   padding: 10px;
   display: flex;
@@ -378,7 +378,7 @@
   content: '';
   width: 90%;
   height: 40px;
-  background: #f1f5f9;
+  background: var(--bg-main);
   border-radius: 8px;
   animation: pulse 1.5s infinite ease-in-out;
   animation-delay: 0.2s;
@@ -400,7 +400,7 @@
   flex-wrap: wrap;
   margin-top: 1.25rem;
   padding: 0.75rem 1rem;
-  background: #f8fafc;
+  background: var(--bg-main);
   border: 1px solid #e2e8f0;
   border-radius: 10px;
 }
@@ -408,7 +408,7 @@
 .leyenda-titulo {
   font-size: 0.8rem;
   font-weight: 700;
-  color: #64748b;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   display: flex;

@@ -1,5 +1,10 @@
 <canvas #bgCanvas class="bg-canvas"></canvas>
 <router-outlet />
-<button class="btn-clear-canvas" (click)="clearCanvas()" title="Limpiar dibujos">
-  <i class="bi bi-eraser-fill"></i>
-</button>
+<div class="floating-actions">
+  <button class="btn-theme-toggle" (click)="toggleTheme()" [title]="isDarkMode ? 'Modo claro' : 'Modo oscuro'">
+    <i class="bi" [class.bi-moon-stars-fill]="!isDarkMode" [class.bi-sun-fill]="isDarkMode"></i>
+  </button>
+  <button class="btn-clear-canvas" (click)="clearCanvas()" title="Limpiar dibujos">
+    <i class="bi bi-eraser-fill"></i>
+  </button>
+</div>

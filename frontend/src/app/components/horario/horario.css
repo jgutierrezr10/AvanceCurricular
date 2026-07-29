@@ -69,7 +69,7 @@
 .horario-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0 2rem 2rem 2rem;
 }
 
 .info-banner {
@@ -93,7 +93,7 @@
 .horario-stats {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .stat-badge {

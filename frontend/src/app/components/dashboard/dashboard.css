@@ -56,6 +56,7 @@
 .dot-blue-dark { background: #3b82f6; }
 .dot-green { background: #10b981; }
 .dot-pink { background: #ec4899; }
+.dot-yellow { background: #f59e0b; }
 .dot-empty { background: var(--border-color); }
 
 /* Top Section */

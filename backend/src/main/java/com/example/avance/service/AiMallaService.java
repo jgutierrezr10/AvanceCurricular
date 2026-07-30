@@ -109,7 +109,7 @@ public class AiMallaService {
 
     private Map<String, Object> buildRequestBody(String base64Image, String contentType) {
         String prompt = """
-                Eres un asistente experto en extraer mallas curriculares universitarias desde imágenes.
+                Eres un asistente experto en extraer mallas curriculares universitarias desde imágenes. Siempre respondes en JSON.
                 Analiza la imagen y extrae TODOS los ramos (asignaturas) con su nombre y semestre correspondiente.
 
                 FORMATO ESPERADO (array JSON):
@@ -127,11 +127,6 @@ public class AiMallaService {
                 - Conserva el nombre exacto de la asignatura
                 - Responde SOLO con el array JSON, sin texto adicional ni markdown""";
 
-        Map<String, Object> systemInstruction = new HashMap<>();
-        Map<String, Object> systemPart = new HashMap<>();
-        systemPart.put("text", "Eres un extractor de mallas curriculares. Siempre respondes en JSON.");
-        systemInstruction.put("parts", List.of(systemPart));
-
         Map<String, Object> userContent = new HashMap<>();
         Map<String, Object> textPart = new HashMap<>();
         textPart.put("text", prompt);
@@ -145,7 +140,6 @@ public class AiMallaService {
         userContent.put("parts", List.of(textPart, imagePart));
 
         Map<String, Object> body = new HashMap<>();
-        body.put("system_instruction", systemInstruction);
         body.put("contents", List.of(userContent));
 
         Map<String, Object> generationConfig = new HashMap<>();

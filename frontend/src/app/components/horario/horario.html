@@ -35,6 +35,10 @@
       </div>
     </div>
 
+    <div class="mobile-scroll-hint" *ngIf="!cargandoHorario">
+      <i class="bi bi-arrow-left-right"></i> Desliza para ver todos los días
+    </div>
+
     <div class="grid-container">
       <!-- Skeleton Loading -->
       <div class="skeleton-container" *ngIf="cargandoHorario">

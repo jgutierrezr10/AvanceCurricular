@@ -27,7 +27,7 @@ public class AiMallaService {
     private String apiKey;
 
     private static final String GEMINI_URL =
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=";
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=";
 
     public List<RamoDTO> importarMallaConIA(MultipartFile imagen, String email) {
         if (apiKey == null || apiKey.isEmpty()) {

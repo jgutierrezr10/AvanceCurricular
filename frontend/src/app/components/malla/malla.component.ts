@@ -577,22 +577,51 @@ export class MallaComponent implements OnInit {
     }
 
     const { value: formValues } = await Swal.fire({
-      title: 'Compartir mi Malla',
-      html:
-        '<input id="swal-input-nombre" class="swal2-input" placeholder="Nombre (Ej: Ing. Informática)" required>' +
-        '<input id="swal-input-univ" class="swal2-input" placeholder="Universidad" required>' +
-        '<textarea id="swal-input-desc" class="swal2-textarea" placeholder="Descripción breve" required></textarea>',
+      title: '<div style="display:flex; align-items:center; justify-content:center; gap:10px;"><i class="bi bi-share-fill" style="color:#6C63FF"></i> Compartir Malla</div>',
+      html: `
+        <div style="text-align: left; padding: 0 5px;">
+          <p style="color: #64748b; font-size: 14px; margin-bottom: 24px; line-height: 1.5; text-align: center;">
+            Publica tu configuración de ramos para que otros estudiantes de tu misma carrera puedan usarla como plantilla inicial.
+          </p>
+          
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 8px;">
+              <i class="bi bi-mortarboard-fill" style="color: #6C63FF; margin-right: 6px;"></i> Carrera
+            </label>
+            <input id="swal-input-nombre" class="swal2-input" style="margin: 0; width: 100%; font-size: 14px; border-radius: 10px; border: 1.5px solid #e2e8f0; box-sizing: border-box; box-shadow: none;" placeholder="Ej: Ingeniería Civil Informática" required>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 8px;">
+              <i class="bi bi-building" style="color: #6C63FF; margin-right: 6px;"></i> Universidad o Institución
+            </label>
+            <input id="swal-input-univ" class="swal2-input" style="margin: 0; width: 100%; font-size: 14px; border-radius: 10px; border: 1.5px solid #e2e8f0; box-sizing: border-box; box-shadow: none;" placeholder="Ej: Universidad de Santiago" required>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 8px;">
+              <i class="bi bi-card-text" style="color: #6C63FF; margin-right: 6px;"></i> Descripción breve
+            </label>
+            <textarea id="swal-input-desc" class="swal2-textarea" style="margin: 0; width: 100%; height: 85px; font-size: 14px; resize: none; border-radius: 10px; border: 1.5px solid #e2e8f0; box-sizing: border-box; box-shadow: none;" placeholder="Plan 2024, incluye electivos de mención..." required></textarea>
+          </div>
+        </div>
+      `,
       focusConfirm: false,
       showCancelButton: true,
-      confirmButtonText: 'Publicar Malla',
+      confirmButtonText: '<i class="bi bi-send-fill" style="margin-right: 6px;"></i> Publicar',
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#6C63FF',
+      cancelButtonColor: '#94a3b8',
+      background: 'var(--bg-card, #ffffff)',
+      customClass: {
+        popup: 'premium-swal-popup'
+      },
       preConfirm: () => {
         const nombre = (document.getElementById('swal-input-nombre') as HTMLInputElement).value;
         const univ = (document.getElementById('swal-input-univ') as HTMLInputElement).value;
         const desc = (document.getElementById('swal-input-desc') as HTMLTextAreaElement).value;
         if (!nombre || !univ || !desc) {
-          Swal.showValidationMessage('Por favor completa todos los campos');
+          Swal.showValidationMessage('Por favor completa todos los campos para publicar');
         }
         return { nombre, univ, desc };
       }

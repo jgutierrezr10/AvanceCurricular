@@ -27,7 +27,7 @@ public class AiMallaService {
     private String apiKey;
 
     private static final String GEMINI_URL =
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=";
+        "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=";
 
     public List<RamoDTO> importarMallaConIA(MultipartFile imagen, String email) {
         if (apiKey == null || apiKey.isEmpty()) {
@@ -127,6 +127,11 @@ public class AiMallaService {
                 - Conserva el nombre exacto de la asignatura
                 - Responde SOLO con el array JSON, sin texto adicional ni markdown""";
 
+        Map<String, Object> systemInstruction = new HashMap<>();
+        Map<String, Object> systemPart = new HashMap<>();
+        systemPart.put("text", "Eres un extractor de mallas curriculares. Siempre respondes en JSON.");
+        systemInstruction.put("parts", List.of(systemPart));
+
         Map<String, Object> userContent = new HashMap<>();
         Map<String, Object> textPart = new HashMap<>();
         textPart.put("text", prompt);
@@ -140,6 +145,7 @@ public class AiMallaService {
         userContent.put("parts", List.of(textPart, imagePart));
 
         Map<String, Object> body = new HashMap<>();
+        body.put("system_instruction", systemInstruction);
         body.put("contents", List.of(userContent));
 
         Map<String, Object> generationConfig = new HashMap<>();

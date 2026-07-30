@@ -26,8 +26,12 @@ public class AiMallaService {
     @Value("${ai.api.key:}")
     private String apiKey;
 
-    private static final String GEMINI_URL =
-        "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=";
+    @Value("${ai.api.model:gemini-1.5-pro}")
+    private String apiModel;
+
+    private String getGeminiUrl() {
+        return "https://generativelanguage.googleapis.com/v1beta/models/" + apiModel + ":generateContent?key=";
+    }
 
     public List<RamoDTO> importarMallaConIA(MultipartFile imagen, String email) {
         if (apiKey == null || apiKey.isEmpty()) {
@@ -61,7 +65,7 @@ public class AiMallaService {
 
         try {
             ResponseEntity<Map> response = restTemplate.exchange(
-                    GEMINI_URL + apiKey, HttpMethod.POST, entity, Map.class);
+                    getGeminiUrl() + apiKey, HttpMethod.POST, entity, Map.class);
 
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new RuntimeException("Error al comunicarse con Gemini. Código: " + response.getStatusCode());

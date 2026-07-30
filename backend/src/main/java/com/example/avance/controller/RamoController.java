@@ -1,12 +1,14 @@
 package com.example.avance.controller;
 
 import com.example.avance.dto.RamoDTO;
+import com.example.avance.service.AiMallaService;
 import com.example.avance.service.RamoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import java.util.Map;
 public class RamoController {
 
     private final RamoService ramoService;
+    private final AiMallaService aiMallaService;
 
     @GetMapping
     public ResponseEntity<List<RamoDTO>> getRamos(@AuthenticationPrincipal UserDetails userDetails) {
@@ -77,5 +80,13 @@ public class RamoController {
             @AuthenticationPrincipal UserDetails userDetails) {
         int porcentaje = ramoService.calcularPorcentajeAvance(userDetails.getUsername());
         return ResponseEntity.ok(Map.of("porcentaje", porcentaje));
+    }
+
+    @PostMapping("/importar-ia")
+    public ResponseEntity<List<RamoDTO>> importarConIA(
+            @RequestParam("imagen") MultipartFile imagen,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        List<RamoDTO> resultado = aiMallaService.importarMallaConIA(imagen, userDetails.getUsername());
+        return ResponseEntity.ok(resultado);
     }
 }

@@ -62,4 +62,10 @@ export class RamoService {
   eliminarMallaPredeterminada(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrlMallas}/${id}`);
   }
+
+  importarConIA(imagen: File): Observable<Ramo[]> {
+    const formData = new FormData();
+    formData.append('imagen', imagen);
+    return this.http.post<Ramo[]>(`${this.apiUrl}/importar-ia`, formData);
+  }
 }

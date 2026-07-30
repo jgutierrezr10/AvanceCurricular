@@ -1046,6 +1046,29 @@
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
 }
 
+.btn-ia {
+  background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+  color: #7c3aed;
+  border: 1.5px solid #c084fc;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-ia:hover {
+  background: linear-gradient(135deg, #f3e8ff, #ede9fe);
+  border-color: #7c3aed;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+}
+
 .btn-danger {
   background: var(--bg-card);
   color: #dc2626;
@@ -1673,4 +1696,21 @@
   background: #6C63FF;
   width: 24px;
   border-radius: 4px;
+}
+
+/* ══════════════════════════════════════
+   SPINNER IA
+   ══════════════════════════════════════ */
+.spinner-ia {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto;
+  border: 4px solid #e0e7ff;
+  border-top-color: #7c3aed;
+  border-radius: 50%;
+  animation: spin-ia 0.8s linear infinite;
+}
+
+@keyframes spin-ia {
+  to { transform: rotate(360deg); }
 }

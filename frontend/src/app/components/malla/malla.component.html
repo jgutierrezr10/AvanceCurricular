@@ -17,25 +17,44 @@
 
     <div class="top-bar-right">
       <button class="btn-highlight" (click)="abrirModalMalla()">
-        <i class="bi bi-grid-3x3-gap-fill"></i> Malla predeterminada
+        <i class="bi bi-grid-3x3-gap-fill"></i> Predeterminada
       </button>
       <button class="btn-highlight" (click)="compartirMalla()" *ngIf="ramos.length > 0">
-        <i class="bi bi-share-fill"></i> Compartir mi malla
+        <i class="bi bi-share-fill"></i> Compartir
       </button>
-      <button class="btn-ia" (click)="importarConIA()">
-        <i class="bi bi-stars"></i> Importar con IA
-      </button>
-      <button class="btn-secondary" (click)="abrirModalMultiple()">
-        <i class="bi bi-list-check"></i> Agregar varios
-      </button>
-      <button class="btn-secondary" (click)="abrirModalImportar()">
-        <i class="bi bi-file-earmark-arrow-up"></i> Importar
-      </button>
+
+      <!-- Dropdown: Importar -->
+      <div class="dropdown-container">
+        <button class="btn-ia" (click)="toggleDropdown('importar')">
+          <i class="bi bi-cloud-arrow-up"></i> Importar <i class="bi bi-chevron-down" style="font-size: 0.8em; margin-left: 2px;"></i>
+        </button>
+        <div class="dropdown-menu" *ngIf="dropdownActivo === 'importar'">
+          <button class="dropdown-item" (click)="abrirModalImportar(); dropdownActivo = ''">
+            <i class="bi bi-file-earmark-arrow-up"></i> Desde archivo (.csv)
+          </button>
+          <button class="dropdown-item" (click)="importarConIA(); dropdownActivo = ''">
+            <i class="bi bi-stars"></i> Desde imagen (IA)
+          </button>
+        </div>
+      </div>
+
+      <!-- Dropdown: Agregar -->
+      <div class="dropdown-container">
+        <button class="btn-primary" (click)="toggleDropdown('agregar')">
+          <i class="bi bi-plus-lg"></i> Agregar <i class="bi bi-chevron-down" style="font-size: 0.8em; margin-left: 2px;"></i>
+        </button>
+        <div class="dropdown-menu" *ngIf="dropdownActivo === 'agregar'">
+          <button class="dropdown-item" (click)="abrirFormulario(); dropdownActivo = ''">
+            <i class="bi bi-journal-plus"></i> Un ramo
+          </button>
+          <button class="dropdown-item" (click)="abrirModalMultiple(); dropdownActivo = ''">
+            <i class="bi bi-list-check"></i> Varios ramos
+          </button>
+        </div>
+      </div>
+
       <button class="btn-danger" (click)="eliminarTodos()" *ngIf="ramos.length > 0">
-        <i class="bi bi-trash3-fill"></i> Eliminar todos
-      </button>
-      <button class="btn-primary" (click)="abrirFormulario()">
-        <i class="bi bi-plus-lg"></i> Agregar ramo
+        <i class="bi bi-trash3-fill"></i> Eliminar
       </button>
     </div>
   </div>
@@ -128,9 +147,9 @@
       <div class="semestre-col" *ngFor="let sem of semestres">
 
         <!-- Header con color por semestre -->
-        <div class="semestre-header" [ngClass]="getSemestreColorClass(sem)">
-          <span (click)="toggleSemestre(sem)" style="cursor: pointer;" title="Cambiar estado de todos los ramos del semestre">Semestre {{ sem }}</span>
-          <div class="semestre-acciones">
+        <div class="semestre-header" [ngClass]="getSemestreColorClass(sem)" (click)="toggleSemestre(sem)" style="cursor: pointer;" title="Cambiar estado de todos los ramos del semestre">
+          <span>Semestre {{ sem }}</span>
+          <div class="semestre-acciones" (click)="$event.stopPropagation()">
             <button class="btn-sem" (click)="abrirFormulario(sem)" title="Agregar ramo">
               <i class="bi bi-plus"></i>
             </button>

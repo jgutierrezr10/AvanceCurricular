@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
@@ -58,6 +58,9 @@ export class MallaComponent implements OnInit {
   tutorialPaso = 1;
   tutorialCargando = false;
 
+  // Dropdowns (Agregar / Importar)
+  dropdownActivo: string = '';
+
   constructor(
     private ramoService: RamoService,
     private authService: AuthService,
@@ -81,6 +84,22 @@ export class MallaComponent implements OnInit {
     this.tutorialActivo = false;
     this.authService.completarTutorial();
     this.router.navigate(['/dashboard']);
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickout(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown-container')) {
+      this.dropdownActivo = '';
+    }
+  }
+
+  toggleDropdown(menu: string) {
+    if (this.dropdownActivo === menu) {
+      this.dropdownActivo = '';
+    } else {
+      this.dropdownActivo = menu;
+    }
   }
 
   tutorialSiguiente() {

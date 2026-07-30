@@ -388,4 +388,411 @@ export class Horario implements OnInit {
       }
     });
   }
+
+  // ══════════════════════════════════════
+  // COMPARTIR HORARIO
+  // ══════════════════════════════════════
+
+  compartirHorario() {
+    const tieneRamos = this.grilla.some(b => b.ramoId || b.ramo2Id);
+    if (!tieneRamos) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Horario vacío',
+        text: 'Aún no has agregado ramos a tu horario para compartir.',
+        confirmButtonColor: '#4f46e5'
+      });
+      return;
+    }
+
+    const canNativeShare = typeof navigator !== 'undefined' && !!navigator.share;
+
+    Swal.fire({
+      title: '<strong>Compartir Horario</strong>',
+      html: `
+        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 1.25rem;">
+          Selecciona cómo deseas compartir tu horario de la <strong>Opción ${this.opcionActiva}</strong>:
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; text-align: left;">
+          <button id="btn-share-img" class="swal2-confirm swal2-styled" style="background-color: #4f46e5; margin: 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; font-weight: 600; padding: 0.75rem;">
+            <i class="bi bi-file-earmark-image-fill" style="font-size: 1.1rem;"></i> Descargar Imagen PNG
+          </button>
+          <button id="btn-share-text" class="swal2-confirm swal2-styled" style="background-color: #0d9488; margin: 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; font-weight: 600; padding: 0.75rem;">
+            <i class="bi bi-clipboard-check-fill" style="font-size: 1.1rem;"></i> Copiar Resumen de Texto
+          </button>
+          ${canNativeShare ? `
+          <button id="btn-share-native" class="swal2-confirm swal2-styled" style="background-color: #2563eb; margin: 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; font-weight: 600; padding: 0.75rem;">
+            <i class="bi bi-share-fill" style="font-size: 1.1rem;"></i> Compartir en Aplicaciones
+          </button>` : ''}
+        </div>
+      `,
+      showConfirmButton: false,
+      showCloseButton: true,
+      focusCancel: false,
+      didOpen: () => {
+        const btnImg = document.getElementById('btn-share-img');
+        const btnText = document.getElementById('btn-share-text');
+        const btnNative = document.getElementById('btn-share-native');
+
+        if (btnImg) {
+          btnImg.addEventListener('click', () => {
+            Swal.close();
+            this.descargarImagenHorario();
+          });
+        }
+        if (btnText) {
+          btnText.addEventListener('click', () => {
+            Swal.close();
+            this.copiarTextoHorario();
+          });
+        }
+        if (btnNative) {
+          btnNative.addEventListener('click', () => {
+            Swal.close();
+            this.compartirNativoHorario();
+          });
+        }
+      }
+    });
+  }
+
+  generarTextoHorario(): string {
+    let texto = `📅 *MI HORARIO ACADÉMICO* (Opción ${this.opcionActiva})\n\n`;
+    let hayCursos = false;
+
+    for (const dia of this.dias) {
+      const bloquesDelDia = this.bloquesKeys.map(key => {
+        const b = this.getBloque(dia, key);
+        return {
+          hora: this.etiquetasHora[key] || key,
+          r1: b.ramoId ? this.getRamoNombre(b.ramoId) : null,
+          d1: b.detalle1,
+          r2: b.ramo2Id ? this.getRamoNombre(b.ramo2Id) : null,
+          d2: b.detalle2
+        };
+      }).filter(b => b.r1 || b.r2);
+
+      if (bloquesDelDia.length > 0) {
+        hayCursos = true;
+        texto += `🔹 *${dia.toUpperCase()}*\n`;
+        for (const b of bloquesDelDia) {
+          if (b.r1) {
+            const det1 = b.d1 ? ` [${b.d1}]` : '';
+            texto += `  • ${b.hora} ➔ ${b.r1}${det1}\n`;
+          }
+          if (b.r2) {
+            const det2 = b.d2 ? ` [${b.d2}]` : '';
+            texto += `  • ${b.hora} ➔ ${b.r2}${det2} (Tope horario)\n`;
+          }
+        }
+        texto += `\n`;
+      }
+    }
+
+    if (!hayCursos) {
+      return `📅 Mi Horario (Opción ${this.opcionActiva})\nAún no has asignado ramos a tu horario.`;
+    }
+
+    return texto.trim();
+  }
+
+  copiarTextoHorario() {
+    const texto = this.generarTextoHorario();
+    navigator.clipboard.writeText(texto).then(() => {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: '¡Horario copiado al portapapeles!',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      });
+    }).catch(err => {
+      console.error('Error al copiar:', err);
+      Swal.fire('Error', 'No se pudo copiar al portapapeles.', 'error');
+    });
+  }
+
+  descargarImagenHorario() {
+    const canvas = this.generarCanvasHorario();
+    const link = document.createElement('a');
+    link.download = `Horario_Opcion_${this.opcionActiva}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: 'Imagen descargada con éxito',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
+  }
+
+  async compartirNativoHorario() {
+    const canvas = this.generarCanvasHorario();
+    const texto = this.generarTextoHorario();
+
+    try {
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          this.copiarTextoHorario();
+          return;
+        }
+        const file = new File([blob], `Horario_Opcion_${this.opcionActiva}.png`, { type: 'image/png' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: `Mi Horario - Opción ${this.opcionActiva}`,
+            text: texto,
+            files: [file]
+          });
+        } else if (navigator.share) {
+          await navigator.share({
+            title: `Mi Horario - Opción ${this.opcionActiva}`,
+            text: texto
+          });
+        } else {
+          this.copiarTextoHorario();
+        }
+      }, 'image/png');
+    } catch (err) {
+      console.error('Error al compartir nativamente:', err);
+    }
+  }
+
+  /** Genera un canvas de alta definición (Retina 2x) con la grilla del horario */
+  generarCanvasHorario(): HTMLCanvasElement {
+    const scale = 2; // Alta resolución
+    const timeColWidth = 130;
+    const dayColWidth = 160;
+    const headerHeight = 70;
+    const tableHeaderHeight = 45;
+    const rowHeight = 65;
+    const legendHeight = 90;
+
+    const totalWidth = timeColWidth + this.dias.length * dayColWidth;
+    const totalHeight = headerHeight + tableHeaderHeight + (this.bloquesKeys.length * rowHeight) + legendHeight;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = totalWidth * scale;
+    canvas.height = totalHeight * scale;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return canvas;
+
+    ctx.scale(scale, scale);
+
+    // Fondo principal
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(0, 0, totalWidth, totalHeight);
+
+    // 1. Header Banner
+    ctx.fillStyle = '#4f46e5';
+    ctx.fillRect(0, 0, totalWidth, headerHeight);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(`📅 MI HORARIO ACADÉMICO - Opción ${this.opcionActiva}`, 20, 42);
+
+    ctx.fillStyle = '#c7d2fe';
+    ctx.font = '500 12px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('Generado con AULA', totalWidth - 20, 42);
+
+    // 2. Encabezado de la Tabla
+    const startY = headerHeight;
+
+    // Fondo del header de la tabla
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(0, startY, totalWidth, tableHeaderHeight);
+
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1;
+
+    // Columna Hora Header
+    ctx.fillStyle = '#475569';
+    ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('HORA', timeColWidth / 2, startY + 27);
+
+    // Días Header
+    this.dias.forEach((dia, i) => {
+      const x = timeColWidth + (i * dayColWidth);
+      ctx.fillText(dia.toUpperCase(), x + (dayColWidth / 2), startY + 27);
+      ctx.beginPath();
+      ctx.moveTo(x, startY);
+      ctx.lineTo(x, startY + tableHeaderHeight);
+      ctx.stroke();
+    });
+
+    // 3. Bloques de Tiempo y Celdas
+    this.bloquesKeys.forEach((key, rowIndex) => {
+      const y = startY + tableHeaderHeight + (rowIndex * rowHeight);
+
+      // Línea divisoria superior de la fila
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(totalWidth, y);
+      ctx.stroke();
+
+      // Columna de hora
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(0, y, timeColWidth, rowHeight);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      const labelHora = this.etiquetasHora[key] || key;
+      ctx.fillText(labelHora, timeColWidth / 2, y + (rowHeight / 2) + 4);
+
+      // Celdas por día
+      this.dias.forEach((dia, colIndex) => {
+        const x = timeColWidth + (colIndex * dayColWidth);
+
+        // Fondo por defecto blanco
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x, y, dayColWidth, rowHeight);
+
+        // Borde izquierdo de celda
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y + rowHeight);
+        ctx.stroke();
+
+        const bloque = this.getBloque(dia, key);
+        const padding = 4;
+        const cellW = dayColWidth - (padding * 2);
+
+        if (bloque.ramoId && bloque.ramo2Id) {
+          // 2 Ramos (Tope Horario) - Mitad y Mitad
+          const halfH = (rowHeight - (padding * 3)) / 2;
+
+          // Slot 1
+          this.renderRamoSlotCanvas(ctx, x + padding, y + padding, cellW, halfH, bloque.ramoId, bloque.detalle1);
+          // Slot 2
+          this.renderRamoSlotCanvas(ctx, x + padding, y + padding + halfH + padding, cellW, halfH, bloque.ramo2Id, bloque.detalle2);
+        } else if (bloque.ramoId) {
+          // 1 Ramo regular
+          const cellH = rowHeight - (padding * 2);
+          this.renderRamoSlotCanvas(ctx, x + padding, y + padding, cellW, cellH, bloque.ramoId, bloque.detalle1);
+        }
+      });
+    });
+
+    // 4. Leyenda de Ramos al Pie
+    const legendY = startY + tableHeaderHeight + (this.bloquesKeys.length * rowHeight) + 15;
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('RAMOS EN HORARIO:', 20, legendY);
+
+    let curX = 20;
+    let curY = legendY + 12;
+
+    this.ramosCursando.forEach((ramo) => {
+      const color = this.getColorRamo(ramo.id);
+      if (!color) return;
+
+      ctx.font = '600 11px system-ui, -apple-system, sans-serif';
+      const textWidth = ctx.measureText(ramo.nombre).width;
+      const pillWidth = textWidth + 24;
+      const pillHeight = 24;
+
+      if (curX + pillWidth > totalWidth - 20) {
+        curX = 20;
+        curY += 30;
+      }
+
+      this.drawRoundRect(ctx, curX, curY, pillWidth, pillHeight, 12, color.bg, color.border);
+
+      ctx.fillStyle = color.text;
+      ctx.textAlign = 'center';
+      ctx.fillText(ramo.nombre, curX + (pillWidth / 2), curY + 16);
+
+      curX += pillWidth + 10;
+    });
+
+    return canvas;
+  }
+
+  private renderRamoSlotCanvas(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    ramoId: number,
+    detalle?: string
+  ) {
+    const color = this.getColorRamo(ramoId);
+    if (!color) return;
+
+    this.drawRoundRect(ctx, x, y, w, h, 6, color.bg, color.border);
+
+    const ramoNombre = this.fitText(ctx, this.getRamoNombre(ramoId), w - 8, 'bold 11px system-ui, -apple-system, sans-serif');
+
+    ctx.fillStyle = color.text;
+    ctx.textAlign = 'center';
+
+    if (detalle && h > 35) {
+      ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+      ctx.fillText(ramoNombre, x + (w / 2), y + (h / 2) - 3);
+
+      ctx.font = '500 10px system-ui, -apple-system, sans-serif';
+      ctx.fillText(`[${detalle}]`, x + (w / 2), y + (h / 2) + 11);
+    } else {
+      ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+      ctx.fillText(ramoNombre, x + (w / 2), y + (h / 2) + 4);
+    }
+  }
+
+  private drawRoundRect(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number,
+    fillColor: string,
+    borderColor?: string
+  ) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+    ctx.fillStyle = fillColor;
+    ctx.fill();
+    if (borderColor) {
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  }
+
+  private fitText(
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    maxWidth: number,
+    font: string
+  ): string {
+    ctx.font = font;
+    if (ctx.measureText(text).width <= maxWidth) return text;
+    let truncated = text;
+    while (truncated.length > 0 && ctx.measureText(truncated + '…').width > maxWidth) {
+      truncated = truncated.slice(0, -1);
+    }
+    return truncated ? truncated + '…' : text;
+  }
 }
+

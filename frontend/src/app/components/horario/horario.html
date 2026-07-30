@@ -12,9 +12,14 @@
       <button class="btn-opcion" [class.active]="opcionActiva === 1" (click)="cambiarOpcion(1)">Principal</button>
       <button class="btn-opcion" [class.active]="opcionActiva === 2" (click)="cambiarOpcion(2)">Opción 2</button>
     </div>
-    <button class="btn-clean" (click)="limpiarHorario()">
-      <i class="bi bi-trash3"></i> Limpiar Todo
-    </button>
+    <div class="actions-group">
+      <button class="btn-share" (click)="compartirHorario()" title="Compartir u obtener imagen/resumen de tu horario">
+        <i class="bi bi-share-fill"></i> Compartir Horario
+      </button>
+      <button class="btn-clean" (click)="limpiarHorario()">
+        <i class="bi bi-trash3"></i> Limpiar Todo
+      </button>
+    </div>
   </div>
 
   <div class="horario-container">

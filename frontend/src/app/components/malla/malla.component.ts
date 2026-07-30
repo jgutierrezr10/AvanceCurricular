@@ -606,56 +606,60 @@ export class MallaComponent implements OnInit {
   // IMPORTAR CON IA
   // ══════════════════════════════════════
 
-  importarConIA() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = (event) => {
-      const file = (event.target as HTMLInputElement).files?.[0];
-      if (!file) return;
+  async importarConIA() {
+    const file = await new Promise<File | null>((resolve) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = (event) => {
+        const f = (event.target as HTMLInputElement).files?.[0] ?? null;
+        resolve(f);
+      };
+      input.click();
+    });
 
-      Swal.fire({
-        title: 'Procesando imagen...',
-        html: `
-          <div style="text-align: center; padding: 1rem;">
-            <div class="spinner-ia"></div>
-            <p style="color: #64748b; margin-top: 1rem; font-size: 14px;">
-              Enviando imagen a la IA para extraer tu malla...
-            </p>
-          </div>
-        `,
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        didOpen: () => {
-          this.ramoService.importarConIA(file).subscribe({
-            next: (ramos) => {
-              Swal.close();
-              this.ramos = ramos;
-              this.actualizarSemestres();
-              this.calcularAvance();
+    if (!file) return;
+
+    await Swal.fire({
+      title: 'Procesando imagen...',
+      html: `
+        <div style="text-align: center; padding: 1rem;">
+          <div class="spinner-ia"></div>
+          <p style="color: #64748b; margin-top: 1rem; font-size: 14px;">
+            Enviando imagen a la IA para extraer tu malla...
+          </p>
+        </div>
+      `,
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        this.ramoService.importarConIA(file).subscribe({
+          next: (ramos) => {
+            Swal.close();
+            this.ramos = ramos;
+            this.actualizarSemestres();
+            this.calcularAvance();
+            this.cdr.detectChanges();
+            if (this.tutorialActivo && this.tutorialPaso === 2) {
+              this.tutorialPaso = 3;
+              this.authService.completarTutorial();
               this.cdr.detectChanges();
-              if (this.tutorialActivo && this.tutorialPaso === 2) {
-                this.tutorialPaso = 3;
-                this.authService.completarTutorial();
-                this.cdr.detectChanges();
-              }
-              Swal.fire({
-                icon: 'success',
-                title: '¡Malla importada!',
-                text: `Se importaron ${ramos.length} ramos exitosamente.`,
-                confirmButtonColor: '#6C63FF'
-              });
-            },
-            error: (err) => {
-              Swal.close();
-              const mensaje = err.error?.message || err.message || 'Error al procesar la imagen con IA';
-              Swal.fire('Error', mensaje, 'error');
             }
-          });
-        }
-      });
-    };
-    input.click();
+            Swal.fire({
+              icon: 'success',
+              title: '¡Malla importada!',
+              text: `Se importaron ${ramos.length} ramos exitosamente.`,
+              confirmButtonColor: '#6C63FF'
+            });
+          },
+          error: (err) => {
+            Swal.close();
+            const mensaje = err.error?.message || err.message || 'Error al procesar la imagen con IA';
+            Swal.fire('Error', mensaje, 'error');
+          }
+        });
+      }
+    });
   }
 
 }

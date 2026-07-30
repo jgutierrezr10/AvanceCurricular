@@ -400,7 +400,7 @@ export class Horario implements OnInit {
         icon: 'info',
         title: 'Horario vacío',
         text: 'Aún no has agregado ramos a tu horario para compartir.',
-        confirmButtonColor: '#4f46e5'
+        confirmButtonColor: '#6c63ff'
       });
       return;
     }
@@ -408,22 +408,66 @@ export class Horario implements OnInit {
     const canNativeShare = typeof navigator !== 'undefined' && !!navigator.share;
 
     Swal.fire({
-      title: '<strong>Compartir Horario</strong>',
+      customClass: {
+        popup: 'share-modal-popup'
+      },
       html: `
-        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 1.25rem;">
-          Selecciona cómo deseas compartir tu horario de la <strong>Opción ${this.opcionActiva}</strong>:
-        </p>
-        <div style="display: flex; flex-direction: column; gap: 0.75rem; text-align: left;">
-          <button id="btn-share-img" class="swal2-confirm swal2-styled" style="background-color: #4f46e5; margin: 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; font-weight: 600; padding: 0.75rem;">
-            <i class="bi bi-file-earmark-image-fill" style="font-size: 1.1rem;"></i> Descargar Imagen PNG
-          </button>
-          <button id="btn-share-text" class="swal2-confirm swal2-styled" style="background-color: #0d9488; margin: 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; font-weight: 600; padding: 0.75rem;">
-            <i class="bi bi-clipboard-check-fill" style="font-size: 1.1rem;"></i> Copiar Resumen de Texto
-          </button>
+        <div class="share-modal-header">
+          <div class="share-modal-icon-badge">
+            <i class="bi bi-share-fill"></i>
+          </div>
+          <h2 class="share-modal-title">Compartir Mi Horario</h2>
+          <div class="share-modal-subtitle">
+            <span>Opción ${this.opcionActiva}</span>
+            <span class="share-modal-badge">${this.ramosEnHorario} ramos asignados</span>
+          </div>
+        </div>
+
+        <div class="share-modal-options">
+          <div id="btn-share-img" class="share-option-card">
+            <div class="share-option-icon icon-purple">
+              <i class="bi bi-file-earmark-image-fill"></i>
+            </div>
+            <div class="share-option-content">
+              <div class="share-option-title">Descargar Imagen PNG</div>
+              <div class="share-option-desc">Exporta tu grilla en alta resolución con colores y leyenda.</div>
+            </div>
+            <div class="share-option-arrow">
+              <i class="bi bi-download"></i>
+            </div>
+          </div>
+
+          <div id="btn-share-text" class="share-option-card">
+            <div class="share-option-icon icon-teal">
+              <i class="bi bi-clipboard-check-fill"></i>
+            </div>
+            <div class="share-option-content">
+              <div class="share-option-title">Copiar Resumen de Texto</div>
+              <div class="share-option-desc">Copia la lista detallada de ramos y horas al portapapeles.</div>
+            </div>
+            <div class="share-option-arrow">
+              <i class="bi bi-copy"></i>
+            </div>
+          </div>
+
           ${canNativeShare ? `
-          <button id="btn-share-native" class="swal2-confirm swal2-styled" style="background-color: #2563eb; margin: 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; font-weight: 600; padding: 0.75rem;">
-            <i class="bi bi-share-fill" style="font-size: 1.1rem;"></i> Compartir en Aplicaciones
-          </button>` : ''}
+          <div id="btn-share-native" class="share-option-card">
+            <div class="share-option-icon icon-blue">
+              <i class="bi bi-send-fill"></i>
+            </div>
+            <div class="share-option-content">
+              <div class="share-option-title">Compartir en Aplicaciones</div>
+              <div class="share-option-desc">Envía directamente a WhatsApp, Telegram o tus apps.</div>
+            </div>
+            <div class="share-option-arrow">
+              <i class="bi bi-box-arrow-up-right"></i>
+            </div>
+          </div>` : ''}
+        </div>
+
+        <div class="share-modal-footer">
+          <i class="bi bi-shield-check"></i>
+          <span>Generado automáticamente con tu distribución de ramos</span>
         </div>
       `,
       showConfirmButton: false,

@@ -20,16 +20,29 @@
   gap: 0.75rem;
 }
 
-.btn-back, .btn-clean, .btn-share {
+.btn-back, .btn-clean, .btn-share, .btn-ia {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.9rem;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
+  font-size: 0.88rem;
+}
+
+.btn-ia {
+  background: linear-gradient(135deg, #6c63ff, #8b5cf6);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 10px rgba(108, 99, 255, 0.25);
+}
+
+.btn-ia:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(108, 99, 255, 0.35);
 }
 
 .btn-share {
@@ -197,15 +210,15 @@
 .time-header, .time-cell {
   position: sticky;
   left: 0;
-  z-index: 10;
-  background: var(--bg-main);
-  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  z-index: 20;
+  background: var(--bg-card, #ffffff) !important;
+  box-shadow: 3px 0 8px rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="dark"] .time-header,
 [data-theme="dark"] .time-cell {
-  background: var(--bg-card);
-  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.3);
+  background: #1e293b !important;
+  box-shadow: 3px 0 8px rgba(0, 0, 0, 0.3);
 }
 
 .time-cell {
@@ -523,17 +536,18 @@
 
 @media (max-width: 768px) {
   .horario-container { 
-    padding: 0.5rem 0.75rem 2rem 0.75rem; 
+    padding: 0.5rem 0.5rem 2rem 0.5rem; 
   }
   .top-bar { 
     flex-direction: column; 
-    gap: 0.75rem; 
+    gap: 0.65rem; 
     align-items: stretch;
-    padding: 0.75rem;
+    padding: 0.75rem 0.5rem;
+    margin-bottom: 0.5rem;
   }
   .top-bar .page-title {
     justify-content: center;
-    margin: 0.25rem 0;
+    margin: 0.15rem 0;
   }
   .top-bar .page-title h1 {
     font-size: 1.15rem;
@@ -553,19 +567,19 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
   .btn-back {
     justify-content: center;
     width: 100%;
-    font-size: 0.85rem;
-    padding: 0.5rem;
+    font-size: 0.82rem;
+    padding: 0.45rem;
   }
-  .btn-share, .btn-clean {
+  .btn-share, .btn-clean, .btn-ia {
     flex: 1;
     justify-content: center;
-    font-size: 0.82rem;
-    padding: 0.55rem 0.4rem;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.2rem;
     white-space: nowrap;
   }
   .mobile-scroll-hint {
@@ -582,25 +596,45 @@
     border-radius: 12px;
     margin-bottom: 0.75rem;
   }
-  .horario-table th, .horario-table td {
-    min-width: 135px;
-    height: 92px;
+  .horario-table th {
+    height: 38px;
+    font-size: 0.75rem;
+  }
+  .horario-table td {
+    min-width: 130px;
+    height: auto;
+    min-height: 65px;
+    padding: 2px;
   }
   .time-header, .time-cell {
     position: sticky;
     left: 0;
-    z-index: 12;
-    min-width: 85px !important;
-    width: 85px !important;
-    font-size: 0.78rem;
+    z-index: 25;
+    background: var(--bg-card, #ffffff) !important;
+    min-width: 80px !important;
+    width: 80px !important;
+    font-size: 0.75rem;
+    box-shadow: 3px 0 8px rgba(0, 0, 0, 0.08);
+  }
+  [data-theme="dark"] .time-header,
+  [data-theme="dark"] .time-cell {
+    background: #1e293b !important;
+  }
+  .ramo-slot {
+    padding: 0.2rem;
+    border-radius: 5px;
   }
   .ramo-select-visible {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.1rem;
+    font-size: 0.72rem;
+    padding: 0.15rem 0.05rem;
   }
   .detalle-input {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.1rem;
+    font-size: 0.68rem;
+    padding: 0.15rem 0.05rem;
+  }
+  .slot-2 .ramo-select-visible.empty-select {
+    font-size: 0.65rem;
+    opacity: 0.7;
   }
   .leyenda-colores { 
     flex-direction: column; 

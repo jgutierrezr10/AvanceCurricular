@@ -3,6 +3,7 @@ package com.example.avance.service;
 import com.example.avance.dto.*;
 import com.example.avance.model.Usuario;
 import com.example.avance.repository.UsuarioRepository;
+import com.example.avance.repository.RamoRepository;
 import com.example.avance.model.PasswordResetToken;
 import com.example.avance.repository.PasswordResetTokenRepository;
 import com.example.avance.model.VerificationToken;
@@ -41,6 +42,7 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final LoginAttemptService loginAttemptService;
+    private final RamoRepository ramoRepository;
 
     @Value("${brevo.api.key:}")
     private String brevoApiKey;
@@ -128,7 +130,8 @@ public class UsuarioService {
         verificationTokenRepository.delete(vToken);
 
         String jwtToken = jwtService.generateToken(usuario.getEmail());
-        return new AuthResponse(jwtToken, usuario.getNombre(), usuario.getEmail());
+        boolean tutorialPendiente = ramoRepository.findByUsuarioId(usuario.getId()).isEmpty();
+        return new AuthResponse(jwtToken, usuario.getNombre(), usuario.getEmail(), false, tutorialPendiente);
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -160,7 +163,8 @@ public class UsuarioService {
 
         loginAttemptService.loginSucceeded(loginKey);
         String token = jwtService.generateToken(usuario.getEmail());
-        return new AuthResponse(token, usuario.getNombre(), usuario.getEmail());
+        boolean tutorialPendiente = ramoRepository.findByUsuarioId(usuario.getId()).isEmpty();
+        return new AuthResponse(token, usuario.getNombre(), usuario.getEmail(), false, tutorialPendiente);
     }
 
     @Transactional
@@ -213,7 +217,8 @@ public class UsuarioService {
                 }
 
                 String token = jwtService.generateToken(usuario.getEmail());
-                return new AuthResponse(token, usuario.getNombre(), usuario.getEmail(), esNuevoUsuario);
+                boolean tutorialPendiente = ramoRepository.findByUsuarioId(usuario.getId()).isEmpty();
+                return new AuthResponse(token, usuario.getNombre(), usuario.getEmail(), esNuevoUsuario, tutorialPendiente);
             } else {
                 throw new RuntimeException("Token de Google inválido o expirado");
             }
@@ -269,7 +274,8 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
 
         String nuevoToken = jwtService.generateToken(usuario.getEmail());
-        return new AuthResponse(nuevoToken, usuario.getNombre(), usuario.getEmail());
+        boolean tutorialPendiente = ramoRepository.findByUsuarioId(usuario.getId()).isEmpty();
+        return new AuthResponse(nuevoToken, usuario.getNombre(), usuario.getEmail(), false, tutorialPendiente);
     }
 
     @Transactional

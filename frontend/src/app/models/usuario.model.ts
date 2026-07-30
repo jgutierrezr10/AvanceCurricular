@@ -19,6 +19,7 @@ export interface AuthResponse {
   nombre: string;
   email: string;
   nuevoUsuario?: boolean;
+  tutorialPendiente?: boolean;
 }
 
 export interface UpdateUserRequest {

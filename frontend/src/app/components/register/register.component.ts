@@ -88,6 +88,7 @@ export class RegisterComponent {
           allowOutsideClick: () => !Swal.isLoading()
         }).then((result) => {
           if (result.isConfirmed && result.value) {
+            const authResponse = result.value;
             Swal.fire({
               icon: 'success',
               title: '¡Cuenta verificada!',
@@ -95,7 +96,11 @@ export class RegisterComponent {
               timer: 1500,
               showConfirmButton: false
             }).then(() => {
-              this.router.navigate(['/dashboard']);
+              if (authResponse.tutorialPendiente) {
+                this.router.navigate(['/malla'], { queryParams: { tutorial: 'true' } });
+              } else {
+                this.router.navigate(['/dashboard']);
+              }
             });
           }
         });

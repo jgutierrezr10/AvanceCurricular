@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { RamoService } from '../../services/ramo.service';
 import { Ramo } from '../../models/ramo.model';
@@ -53,15 +53,62 @@ export class MallaComponent implements OnInit {
   confirmacionMensaje = '';
   accionConfirmacion: () => void = () => {};
 
+  // Tutorial
+  tutorialActivo = false;
+  tutorialPaso = 1;
+  tutorialCargando = false;
+
   constructor(
     private ramoService: RamoService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params['tutorial'] === 'true') {
+        this.tutorialActivo = true;
+        this.tutorialPaso = 1;
+      }
+    });
     this.cargarRamos();
     this.cargarMallasPredeterminadas();
+  }
+
+  cerrarTutorial() {
+    this.tutorialActivo = false;
+    this.authService.completarTutorial();
+    this.router.navigate(['/dashboard']);
+  }
+
+  tutorialSiguiente() {
+    if (this.tutorialPaso === 2 && this.ramos.length === 0) {
+      Swal.fire('Atención', 'Primero carga una malla o agrega ramos para continuar', 'warning');
+      return;
+    }
+    if (this.tutorialPaso < 4) {
+      this.tutorialPaso++;
+    }
+    if (this.tutorialPaso === 4) {
+      this.authService.completarTutorial();
+    }
+    this.cdr.detectChanges();
+  }
+
+  tutorialAnterior() {
+    if (this.tutorialPaso > 1) {
+      this.tutorialPaso--;
+    }
+  }
+
+  tutorialSaltar() {
+    if (this.ramos.length > 0) {
+      this.cerrarTutorial();
+    } else {
+      Swal.fire('Atención', 'Debes cargar al menos un ramo para continuar', 'warning');
+    }
   }
 
   cargarMallasPredeterminadas() {
@@ -173,6 +220,11 @@ export class MallaComponent implements OnInit {
         next: () => {
           this.mostrarFormulario = false;
           this.cargarRamos();
+          if (this.tutorialActivo && this.tutorialPaso === 2) {
+            this.tutorialPaso = 3;
+            this.authService.completarTutorial();
+            this.cdr.detectChanges();
+          }
         },
         error: () => Swal.fire('Atención', 'Error al crear el ramo', 'warning')
       });
@@ -341,6 +393,11 @@ export class MallaComponent implements OnInit {
       next: () => {
         this.mostrarModalMultiple = false;
         this.cargarRamos();
+        if (this.tutorialActivo && this.tutorialPaso === 2) {
+          this.tutorialPaso = 3;
+          this.authService.completarTutorial();
+          this.cdr.detectChanges();
+        }
       },
       error: () => {
         Swal.fire('Atención', 'Error al agregar algunos ramos', 'warning');
@@ -412,6 +469,11 @@ export class MallaComponent implements OnInit {
       next: () => {
         this.mostrarModalImportar = false;
         this.cargarRamos();
+        if (this.tutorialActivo && this.tutorialPaso === 2) {
+          this.tutorialPaso = 3;
+          this.authService.completarTutorial();
+          this.cdr.detectChanges();
+        }
       },
       error: () => {
         Swal.fire('Atención', 'Error al importar algunos ramos', 'warning');
@@ -476,6 +538,11 @@ export class MallaComponent implements OnInit {
         this.cargandoMalla = false;
         this.mostrarModalMalla = false;
         this.cargarRamos();
+        if (this.tutorialActivo && this.tutorialPaso === 2) {
+          this.tutorialPaso = 3;
+          this.authService.completarTutorial();
+          this.cdr.detectChanges();
+        }
       },
       error: () => {
         this.cargandoMalla = false;

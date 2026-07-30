@@ -418,4 +418,180 @@
     </div>
   </div>
 
+  <!-- ── Tutorial Overlay ── -->
+  <div class="tutorial-overlay" *ngIf="tutorialActivo" (click)="$event.stopPropagation()">
+    <div class="tutorial-card" (click)="$event.stopPropagation()">
+
+      <!-- Step 1: Bienvenida -->
+      <div class="tutorial-step" *ngIf="tutorialPaso === 1">
+        <div class="tutorial-icon">
+          <i class="bi bi-journal-bookmark-fill"></i>
+        </div>
+        <h2>¡Bienvenido a tu Malla Curricular!</h2>
+        <p class="tutorial-desc">
+          Aquí podrás organizar todos los ramos de tu carrera por semestre,
+          llevar el control de tu avance y gestionar tu horario.
+        </p>
+        <div class="tutorial-features">
+          <div class="tutorial-feature">
+            <i class="bi bi-grid-3x3-gap-fill"></i>
+            <span>Carga una malla predeterminada de tu carrera</span>
+          </div>
+          <div class="tutorial-feature">
+            <i class="bi bi-plus-circle"></i>
+            <span>Agrega ramos manualmente</span>
+          </div>
+          <div class="tutorial-feature">
+            <i class="bi bi-hand-index-thumb"></i>
+            <span>Cambia el estado de cada ramo con un clic</span>
+          </div>
+          <div class="tutorial-feature">
+            <i class="bi bi-pie-chart-fill"></i>
+            <span>Visualiza tu progreso en tiempo real</span>
+          </div>
+        </div>
+        <div class="tutorial-acciones">
+          <button class="tutorial-btn tutorial-btn-primary" (click)="tutorialSiguiente()">
+            Empezar <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Elegir malla o agregar -->
+      <div class="tutorial-step" *ngIf="tutorialPaso === 2">
+        <div class="tutorial-icon step-icon-2">
+          <i class="bi bi-grid-3x3-gap-fill"></i>
+        </div>
+        <h2>Configura tu Malla</h2>
+        <p class="tutorial-desc">
+          Elige cómo quieres construir tu malla curricular:
+        </p>
+        <div class="tutorial-opciones">
+          <button class="tutorial-opcion" (click)="abrirModalMalla()">
+            <i class="bi bi-grid-3x3-gap-fill opcion-icon"></i>
+            <div class="opcion-texto">
+              <strong>Cargar malla predeterminada</strong>
+              <span>Selecciona tu carrera y carga todos los ramos automáticamente</span>
+            </div>
+            <i class="bi bi-chevron-right"></i>
+          </button>
+          <button class="tutorial-opcion" (click)="abrirFormulario()">
+            <i class="bi bi-plus-circle opcion-icon"></i>
+            <div class="opcion-texto">
+              <strong>Agregar ramo manualmente</strong>
+              <span>Ingresa tus ramos uno por uno con su semestre</span>
+            </div>
+            <i class="bi bi-chevron-right"></i>
+          </button>
+          <button class="tutorial-opcion" (click)="abrirModalMultiple()">
+            <i class="bi bi-list-check opcion-icon"></i>
+            <div class="opcion-texto">
+              <strong>Agregar varios ramos</strong>
+              <span>Ingresa múltiples ramos para un mismo semestre</span>
+            </div>
+            <i class="bi bi-chevron-right"></i>
+          </button>
+          <button class="tutorial-opcion" (click)="abrirModalImportar()">
+            <i class="bi bi-file-earmark-arrow-up opcion-icon"></i>
+            <div class="opcion-texto">
+              <strong>Importar desde archivo</strong>
+              <span>Carga un archivo .csv o .txt con tu malla completa</span>
+            </div>
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+        <div class="tutorial-hint" *ngIf="ramos.length > 0">
+          <i class="bi bi-check-circle-fill"></i> ¡Has agregado {{ ramos.length }} ramos! Puedes continuar.
+        </div>
+        <div class="tutorial-acciones">
+          <button class="tutorial-btn tutorial-btn-secondary" (click)="tutorialAnterior()">
+            <i class="bi bi-arrow-left"></i> Atrás
+          </button>
+          <button class="tutorial-btn tutorial-btn-primary" [disabled]="ramos.length === 0" (click)="tutorialSiguiente()">
+            Continuar <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+        <button class="tutorial-skip" (click)="tutorialSaltar()" *ngIf="ramos.length > 0">
+          Saltar tutorial
+        </button>
+      </div>
+
+      <!-- Step 3: Explicación de la malla -->
+      <div class="tutorial-step" *ngIf="tutorialPaso === 3">
+        <div class="tutorial-icon step-icon-3">
+          <i class="bi bi-hand-index-thumb"></i>
+        </div>
+        <h2>¡Malla lista!</h2>
+        <p class="tutorial-desc">
+          Así funciona tu malla curricular:
+        </p>
+        <div class="tutorial-features">
+          <div class="tutorial-feature">
+            <div class="feature-demo pendiente-demo"></div>
+            <span><strong>Pendiente</strong> — Ramos que aún no cursas</span>
+          </div>
+          <div class="tutorial-feature">
+            <div class="feature-demo cursando-demo"></div>
+            <span><strong>Cursando</strong> — Ramos que estás tomando actualmente</span>
+          </div>
+          <div class="tutorial-feature">
+            <div class="feature-demo aprobado-demo"></div>
+            <span><strong>Aprobado</strong> — Ramos que ya aprobaste</span>
+          </div>
+          <div class="tutorial-feature">
+            <i class="bi bi-arrow-repeat"></i>
+            <span>Haz <strong>clic</strong> en un ramo para cambiar entre estados</span>
+          </div>
+        </div>
+        <div class="tutorial-acciones">
+          <button class="tutorial-btn tutorial-btn-secondary" (click)="tutorialAnterior()">
+            <i class="bi bi-arrow-left"></i> Atrás
+          </button>
+          <button class="tutorial-btn tutorial-btn-primary" (click)="tutorialSiguiente()">
+            Entendido <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 4: Completado -->
+      <div class="tutorial-step" *ngIf="tutorialPaso === 4">
+        <div class="tutorial-icon step-icon-4">
+          <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <h2>¡Todo listo!</h2>
+        <p class="tutorial-desc">
+          Ya tienes tu malla configurada. Ahora puedes explorar el resto de las funciones:
+        </p>
+        <div class="tutorial-features">
+          <div class="tutorial-feature">
+            <i class="bi bi-speedometer2"></i>
+            <span><strong>Dashboard</strong> — Resumen de tu avance</span>
+          </div>
+          <div class="tutorial-feature">
+            <i class="bi bi-calendar-week"></i>
+            <span><strong>Horario</strong> — Organiza tus clases</span>
+          </div>
+          <div class="tutorial-feature">
+            <i class="bi bi-star-fill"></i>
+            <span><strong>Notas</strong> — Gestiona tus evaluaciones</span>
+          </div>
+        </div>
+        <div class="tutorial-acciones">
+          <button class="tutorial-btn tutorial-btn-primary" (click)="cerrarTutorial()">
+            Ir al Dashboard <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Progress dots -->
+      <div class="tutorial-progress">
+        <span class="tutorial-dot" [class.active]="tutorialPaso === 1"></span>
+        <span class="tutorial-dot" [class.active]="tutorialPaso === 2"></span>
+        <span class="tutorial-dot" [class.active]="tutorialPaso === 3"></span>
+        <span class="tutorial-dot" [class.active]="tutorialPaso === 4"></span>
+      </div>
+
+    </div>
+  </div>
+
 </div>

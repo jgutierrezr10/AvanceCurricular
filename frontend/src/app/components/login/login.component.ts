@@ -99,11 +99,23 @@ export class LoginComponent implements AfterViewInit {
             }
           }).then((result) => {
             if (result.isConfirmed) {
-              this.ngZone.run(() => this.router.navigate(['/dashboard']));
+              this.ngZone.run(() => {
+                if (result.value?.tutorialPendiente) {
+                  this.router.navigate(['/malla'], { queryParams: { tutorial: 'true' } });
+                } else {
+                  this.router.navigate(['/dashboard']);
+                }
+              });
             }
           });
         } else {
-          this.ngZone.run(() => this.router.navigate(['/dashboard']));
+          this.ngZone.run(() => {
+            if (res.tutorialPendiente) {
+              this.router.navigate(['/malla'], { queryParams: { tutorial: 'true' } });
+            } else {
+              this.router.navigate(['/dashboard']);
+            }
+          });
         }
       },
       error: (err) => {
@@ -136,8 +148,12 @@ export class LoginComponent implements AfterViewInit {
     this.error = '';
     this.cargando = true;
     this.authService.login({ email: this.email.trim(), password: this.password }, this.recordarme).subscribe({
-      next: () => {
-        this.router.navigate(['/dashboard']);
+      next: (res) => {
+        if (res.tutorialPendiente) {
+          this.router.navigate(['/malla'], { queryParams: { tutorial: 'true' } });
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
       },
       error: (err) => {
         if (err && err.error && err.error.message) {

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
+import { mallaGuard } from './guards/malla.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -17,7 +18,7 @@ export const routes: Routes = [
     path: 'dashboard',
     loadComponent: () =>
       import('./components/dashboard/dashboard').then(m => m.Dashboard),
-    canActivate: [authGuard]
+    canActivate: [authGuard, mallaGuard]
   },
   {
     path: 'malla',
@@ -29,19 +30,19 @@ export const routes: Routes = [
     path: 'horario',
     loadComponent: () =>
       import('./components/horario/horario').then(m => m.Horario),
-    canActivate: [authGuard]
+    canActivate: [authGuard, mallaGuard]
   },
   {
     path: 'notas',
     loadComponent: () =>
       import('./components/notas/notas.component').then(m => m.NotasComponent),
-    canActivate: [authGuard]
+    canActivate: [authGuard, mallaGuard]
   },
   {
     path: 'calendario',
     loadComponent: () =>
       import('./components/calendario/calendario.component').then(m => m.CalendarioComponent),
-    canActivate: [authGuard]
+    canActivate: [authGuard, mallaGuard]
   },
   { path: '**', redirectTo: 'login' }
 ];

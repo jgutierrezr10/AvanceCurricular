@@ -13,11 +13,15 @@ export class AuthService {
   private apiUrl = environment.apiUrl + '/api/auth';
   private usuarioSubject = new BehaviorSubject<AuthResponse | null>(null);
   usuario$ = this.usuarioSubject.asObservable();
+  private mallaPendienteSubject = new BehaviorSubject<boolean>(false);
+  mallaPendiente$ = this.mallaPendienteSubject.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {
     const stored = localStorage.getItem('usuario') || sessionStorage.getItem('usuario');
     if (stored) {
-      this.usuarioSubject.next(JSON.parse(stored));
+      const user = JSON.parse(stored);
+      this.usuarioSubject.next(user);
+      this.mallaPendienteSubject.next(user.tutorialPendiente ?? false);
     }
   }
 
@@ -67,6 +71,7 @@ export class AuthService {
     localStorage.removeItem('usuario');
     sessionStorage.removeItem('usuario');
     this.usuarioSubject.next(null);
+    this.mallaPendienteSubject.next(false);
     this.router.navigate(['/login']);
   }
 
@@ -82,6 +87,25 @@ export class AuthService {
     return this.usuarioSubject.value;
   }
 
+  isMallaPendiente(): boolean {
+    return this.mallaPendienteSubject.value;
+  }
+
+  completarTutorial() {
+    this.mallaPendienteSubject.next(false);
+    const stored = localStorage.getItem('usuario') || sessionStorage.getItem('usuario');
+    if (stored) {
+      const user = JSON.parse(stored);
+      user.tutorialPendiente = false;
+      const dataStr = JSON.stringify(user);
+      if (localStorage.getItem('usuario')) {
+        localStorage.setItem('usuario', dataStr);
+      } else {
+        sessionStorage.setItem('usuario', dataStr);
+      }
+    }
+  }
+
   private guardarSesion(res: AuthResponse, persistir: boolean = true) {
     const dataStr = JSON.stringify(res);
     if (persistir) {
@@ -92,5 +116,6 @@ export class AuthService {
       localStorage.removeItem('usuario');
     }
     this.usuarioSubject.next(res);
+    this.mallaPendienteSubject.next(res.tutorialPendiente ?? false);
   }
 }

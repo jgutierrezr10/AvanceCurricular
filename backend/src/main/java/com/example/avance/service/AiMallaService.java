@@ -26,7 +26,7 @@ public class AiMallaService {
     @Value("${ai.api.key:}")
     private String apiKey;
 
-    @Value("${ai.api.model:gemini-2.0-flash}")
+    @Value("${ai.api.model:gemini-2.0-flash-lite}")
     private String apiModel;
 
     private String getGeminiUrl() {

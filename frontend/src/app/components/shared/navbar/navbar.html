@@ -65,15 +65,7 @@
     <form (ngSubmit)="actualizarCuenta()">
       <div class="modal-body">
 
-        <!-- Mensajes de Estado -->
-        <div class="alert alert-danger" *ngIf="errorMsg">
-          <i class="bi bi-exclamation-triangle-fill"></i>
-          <span>{{ errorMsg }}</span>
-        </div>
-        <div class="alert alert-success" *ngIf="successMsg">
-          <i class="bi bi-check-circle-fill"></i>
-          <span>{{ successMsg }}</span>
-        </div>
+        <!-- Mensajes de Estado (Reemplazados por SweetAlert2) -->
 
         <!-- Nombre -->
         <div class="form-group">

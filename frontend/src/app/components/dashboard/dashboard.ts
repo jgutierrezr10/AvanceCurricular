@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { forkJoin, of, timeout, catchError } from 'rxjs';
+import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
 import { Navbar } from '../shared/navbar/navbar';
 import { RamoService } from '../../services/ramo.service';
@@ -72,6 +73,7 @@ export class Dashboard implements OnInit {
       timeout(TIMEOUT_MS),
       catchError(err => {
         console.error('Error/timeout al cargar ramos en dashboard:', err);
+        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Error al cargar malla', showConfirmButton: false, timer: 3000 });
         return of([] as Ramo[]);
       })
     );
@@ -80,6 +82,7 @@ export class Dashboard implements OnInit {
       timeout(TIMEOUT_MS),
       catchError(err => {
         console.error('Error/timeout al cargar evaluaciones en dashboard:', err);
+        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Error al cargar notas', showConfirmButton: false, timer: 3000 });
         return of([] as Evaluacion[]);
       })
     );
@@ -88,6 +91,7 @@ export class Dashboard implements OnInit {
       timeout(TIMEOUT_MS),
       catchError(err => {
         console.error('Error/timeout al cargar horario en dashboard:', err);
+        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Error al cargar horario', showConfirmButton: false, timer: 3000 });
         return of([] as BloqueHorarioDTO[]);
       })
     );
@@ -280,6 +284,15 @@ export class Dashboard implements OnInit {
       error: (err) => {
         console.error('Error al cargar datos del dashboard:', err);
         this.cdr.detectChanges();
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Error de conexión',
+          text: 'Hubo un problema al cargar el dashboard.',
+          showConfirmButton: false,
+          timer: 3000
+        });
       }
     });
   }

@@ -2,6 +2,7 @@ import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 import { AuthService } from '../../../services/auth.service';
 import { UpdateUserRequest } from '../../../models/usuario.model';
 
@@ -86,19 +87,35 @@ export class Navbar implements OnInit {
         if (res.token) {
           localStorage.setItem('token', res.token);
         }
-        this.successMsg = '¡Cuenta actualizada con éxito!';
         this.currentPassword = '';
         this.newPassword = '';
         this.guardando = false;
-        // Cerrar modal automáticamente después de 1.5s
+        
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: '¡Cuenta actualizada con éxito!',
+          showConfirmButton: false,
+          timer: 2500
+        });
+
+        // Cerrar modal automáticamente
         setTimeout(() => {
           this.cerrarMiCuenta();
         }, 1500);
       },
       error: (err) => {
         console.error('Error al actualizar cuenta:', err);
-        this.errorMsg = err.error?.message || err.error || 'Ocurrió un error al actualizar tus datos.';
+        const errorMsg = err.error?.message || err.error || 'Ocurrió un error al actualizar tus datos.';
         this.guardando = false;
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: errorMsg,
+          confirmButtonColor: '#6c63ff'
+        });
       }
     });
   }

@@ -387,6 +387,8 @@ export class Horario implements OnInit {
         });
       }
     });
+  }
+
   // ══════════════════════════════════════
   // COMPARTIR HORARIO
   // ══════════════════════════════════════
